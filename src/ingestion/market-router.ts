@@ -26,11 +26,17 @@ private async fastFallback(
 
       }
 
-    } catch {}
+    } catch (err) {
+      console.error(`Provider failed: ${task.name}`, err);
+    }
 
   }
 
-  throw new Error("All providers failed");
+  console.error("ALL PROVIDERS FAILED — returning fallback");
+
+  this.source = "fallback";
+
+  return 0;
 
 }
   
