@@ -96,12 +96,20 @@ private async fastFallback(
 
     if (symbol.endsWith("USDT")) {
 
-return this.fastFallback([
-  { fn: () => this.binancePrice(symbol), name: "Binance REST API" },
-  { fn: () => this.coinGeckoPrice(symbol), name: "CoinGecko API" },
-  { fn: () => this.coinCapPrice(symbol), name: "CoinCap API" },
-  { fn: () => this.cryptoComparePrice(symbol), name: "CryptoCompare API" }
-]);
+return this.fastFallback(
+  [
+    { fn: () => this.binancePrice(symbol), name: "Binance REST API" },
+    { fn: () => this.coinGeckoPrice(symbol), name: "CoinGecko API" },
+    { fn: () => this.coinCapPrice(symbol), name: "CoinCap API" },
+    { fn: () => this.cryptoComparePrice(symbol), name: "CryptoCompare API" }
+  ].map(t => ({
+    name: t.name,
+    fn: async () => {
+      console.log("TRYING:", t.name);
+      return await t.fn();
+    }
+  }))
+);
     }
 
     /* =========================================================
