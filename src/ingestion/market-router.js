@@ -68,14 +68,14 @@ class MarketRouter {
         /* =========================================================
            CRYPTO
         ========================================================= */
-        if (symbol.endsWith("USDT")) {
-            return this.fastFallback([
-                { fn: () => this.binancePrice(symbol), name: "Binance REST API" },
-                { fn: () => this.coinGeckoPrice(symbol), name: "CoinGecko API" },
-                { fn: () => this.coinCapPrice(symbol), name: "CoinCap API" },
-                { fn: () => this.cryptoComparePrice(symbol), name: "CryptoCompare API" }
-            ]);
-        }
+if (symbol.endsWith("USDT")) {
+    return this.fastFallback([
+        { fn: async () => { console.log("TRYING: Binance"); return this.binancePrice(symbol); }, name: "Binance REST API" },
+        { fn: async () => { console.log("TRYING: CoinGecko"); return this.coinGeckoPrice(symbol); }, name: "CoinGecko API" },
+        { fn: async () => { console.log("TRYING: CoinCap"); return this.coinCapPrice(symbol); }, name: "CoinCap API" },
+        { fn: async () => { console.log("TRYING: CryptoCompare"); return this.cryptoComparePrice(symbol); }, name: "CryptoCompare API" }
+    ]);
+}
         /* =========================================================
            FOREX
         ========================================================= */
