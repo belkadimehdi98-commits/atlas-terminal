@@ -1036,7 +1036,7 @@ document.getElementById("volatility-state").innerText = "-";
 document.querySelector(".asset-name").innerText = asset;
 // TRACK RECORD FETCH
 try {
-  const tr = await fetch("https://atlas-terminal-6p91.onrender.com/track-record")
+const tr = await fetch("https://atlas-terminal-api.onrender.com/track-record")
     .then(async (r) => {
       const text = await r.text();
       try {
