@@ -83,7 +83,11 @@ try {
 } catch {
   return [];
 }
-    return res.data.articles.map((a: any) => ({
+if (!res || !res.data || !res.data.articles) {
+  return [];
+}
+
+return res.data.articles.map((a: any) => ({
       title: a.title,
       source: a.source?.name || "Unknown",
       url: a.url,
