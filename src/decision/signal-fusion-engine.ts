@@ -18,6 +18,7 @@ export interface FusedSignalState {
   positioning?: any
   liquidation?: any
   options?: any
+  weather?: any
 }
 
 export async function signalFusionEngine(input: any): Promise<FusedSignalState> {

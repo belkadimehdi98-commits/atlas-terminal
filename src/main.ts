@@ -92,10 +92,10 @@ const regime = marketRegimeEngine({
      SIGNAL FUSION
   =============================== */
 
-  const fusedSignals = signalFusionEngine({
-    asset,
-    signals
-  });
+const fusedSignals = await signalFusionEngine({
+  asset,
+  signals
+});
 const strategy = await strategicAnalyst({
   asset,
   signals,
