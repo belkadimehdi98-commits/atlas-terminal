@@ -999,10 +999,11 @@ const res = await fetch(API, {
 
 const text = await res.text();
 
+console.log("RAW ANALYZE RESPONSE:", text); // ← FORCE PRINT
+
 try {
   data = JSON.parse(text);
 } catch (e) {
-  console.error("RAW ANALYZE RESPONSE:", text);
   throw new Error("Invalid JSON from backend");
 }
 
