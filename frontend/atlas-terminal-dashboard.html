@@ -1003,10 +1003,7 @@ try {
   data = JSON.parse(text);
 } catch (e) {
   console.error("RAW ANALYZE RESPONSE:", text);
-  throw new Error("Backend returned invalid JSON");
-}
-} catch (err) {
-  data = { error: true };
+  throw new Error("Invalid JSON from backend");
 }
 
 /* --- HANDLE MISSING OR UNREACHABLE ASSETS --- */
