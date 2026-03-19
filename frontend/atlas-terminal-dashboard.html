@@ -913,8 +913,8 @@ Risk analysis will appear here once the model completes evaluation.
   </div>
 <script>
 
-const API = "http://localhost:3000/analyze";
-const BACKTEST_API = "http://localhost:3000/backtest";
+const API = "https://atlas-terminal-6p91.onrender.com/analyze";
+const BACKTEST_API = "https://atlas-terminal-6p91.onrender.com/backtest";
 /* ASSET UNIVERSE */
 
 const ASSETS = {
@@ -1030,7 +1030,7 @@ document.getElementById("volatility-state").innerText = "-";
 document.querySelector(".asset-name").innerText = asset;
 // TRACK RECORD FETCH
 try {
-  const tr = await fetch("http://localhost:3000/track-record")
+  const tr = await fetch("https://atlas-terminal-6p91.onrender.com/track-record")
     .then(r => r.json());
 
   document.getElementById("track-record").innerText =
@@ -1448,7 +1448,7 @@ async function loadCandles(symbol){
   try{
 
     const res = await fetch(
-      `http://localhost:3000/candles?symbol=${symbol}&assetClass=${assetClass}&interval=1h`
+      `https://atlas-terminal-6p91.onrender.com/candles?symbol=${symbol}&assetClass=${assetClass}&interval=1h`
     );
 
     const data = await res.json();
