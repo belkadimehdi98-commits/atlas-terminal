@@ -23,7 +23,9 @@ class MarketRouter {
             }
             catch (_a) { }
         }
-        throw new Error("All providers failed");
+console.error("ALL PROVIDERS FAILED — returning fallback");
+this.source = "fallback";
+return 0;
     }
     /* =========================================================
        MAIN ENTRY
