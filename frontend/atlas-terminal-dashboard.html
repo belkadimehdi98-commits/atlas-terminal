@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atlas Terminal</title>
+  <style>
+    :root {
+      --bg: #07111b;
+      --panel: #0b1624;
+      --panel-2: #0f1d2e;
+      --line: rgba(138, 165, 204, 0.14);
+      --line-strong: rgba(138, 165, 204, 0.22);
+      --text: #edf3ff;
+      --muted: #91a4c2;
+      --muted-2: #6f82a1;
+      --buy: #00e58a;
+      --sell: #ff5463;
+      --neutral: #7f93b7;
+      --accent: #5f8fff;
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      min-height: 100%;
+      background: linear-gradient(180deg, #06101a 0%, #07111b 100%);
+      color: var(--text);
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    body {
+      padding: 18px;
+    }
+
+    .app {
+      max-width: 1180px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .shell {
+      background: linear-gradient(180deg, rgba(12, 23, 36, 0.98), rgba(9, 18, 29, 0.98));
+      border: 1px solid var(--line);
+      border-radius: 22px;
+      overflow: hidden;
+    }
+
+    .topbar {
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      display: grid;
+      grid-template-columns: 220px 1fr auto;
+      gap: 14px;
+      align-items: center;
+    }
+
+    .brand {
+      display: grid;
+      gap: 4px;
+    }
+
+    .brand-kicker {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--accent);
+      font-weight: 700;
+    }
+
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+    }
+
+    .searchbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .searchbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      height: 54px;
+      padding: 0 16px;
+      background: #091320;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+    }
+
+    .searchbox input {
+      width: 100%;
+      background: transparent;
+      border: 0;
+      outline: 0;
+      color: var(--text);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+
+    .searchbox input::placeholder { color: var(--muted-2); }
+
+.run-btn,
+.quick-asset {
+  height: 54px;
+  border-radius: 14px;
+  border: 1px solid var(--line-strong);
+  background: #102033;
+  color: var(--text);
+  padding: 0 18px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+ .run-btn { min-width: 150px; }
+.action-stack{
+display:flex;
+align-items:center;
+gap:10px;
+}
+.run-btn,
+.secondary-btn{
+height:54px;
+min-width:150px;
+border-radius:14px;
+border:1px solid var(--line-strong);
+background:#102033;
+color:var(--text);
+padding:0 18px;
+font-size:13px;
+font-weight:800;
+text-transform:uppercase;
+letter-spacing:0.08em;
+cursor:pointer;
+}
+
+.backtest-row{
+display:flex;
+align-items:center;
+gap:12px;
+margin-left:10px;
+}
+
+.backtest-inline{
+font-size:13px;
+color:#edf3ff;
+font-weight:800;
+letter-spacing:.05em;
+margin-left:6px;
+}
+    .quick-assets {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .quick-asset {
+      height: 40px;
+      padding: 0 14px;
+      background: #0a1522;
+      font-size: 12px;
+    }
+/* ===== ASSET NAVIGATION ===== */
+
+.asset-nav{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  align-items:flex-end;
+  margin-top:6px;
+}
+
+/* category tabs */
+
+.asset-tabs{
+  display:flex;
+  gap:10px;
+  justify-content:flex-start;
+}
+
+.asset-tab{
+  height:34px;
+  padding:0 12px;
+  border-radius:8px;
+  border:1px solid var(--line);
+  background:#0a1522;
+  color:var(--muted);
+  font-size:11px;
+  font-weight:800;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  cursor:pointer;
+  transition:all .15s ease;
+}
+
+.asset-tab:hover{
+  border-color:var(--accent);
+  color:white;
+}
+
+.asset-tab.active{
+  color:white;
+  border-color:var(--accent);
+  background:#0f2138;
+}
+
+/* asset chips */
+
+.asset-strip{
+  display:flex;
+  gap:10px;
+  flex-wrap:nowrap;
+  justify-content:flex-start;
+  overflow-x:auto;
+  padding-top:10px;
+}
+
+.asset-strip::-webkit-scrollbar{
+  display:none;
+}
+
+.asset-chip{
+  height:38px;
+  padding:0 14px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#0b1624;
+  color:#d7e6ff;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.04em;
+  cursor:pointer;
+  white-space:nowrap;
+  transition:all .15s ease;
+}
+
+.asset-chip:hover{
+  border-color:var(--accent);
+  background:#0f2138;
+}
+
+.asset-chip.active{
+  background:#102033;
+  border-color:var(--accent);
+  color:white;
+}
+    .workspace {
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 1.25fr 0.9fr;
+      gap: 16px;
+      align-items: start;
+    }
+.left-column{
+  display:grid;
+  gap:16px;
+}
+    .decision-panel,
+    .analysis-panel {
+      background: linear-gradient(180deg, rgba(11, 22, 36, 0.96), rgba(8, 17, 27, 0.98));
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+    }
+
+    .decision-panel {
+      padding: 22px;
+      display: grid;
+      gap: 18px;
+    }
+
+    .decision-header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px;
+      align-items: start;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .asset-meta {
+      display: grid;
+      gap: 8px;
+    }
+
+.asset-name {
+  font-size: 46px;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+}
+
+    .sub-meta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .pill {
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--line);
+      background: #0b1624;
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .decision-box {
+      min-width: 220px;
+      display: grid;
+      gap: 4px;
+      justify-items: end;
+      text-align: right;
+    }
+
+    .decision-label {
+      font-size: 11px;
+      color: var(--muted-2);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 800;
+    }
+
+.decision-value {
+  font-size: 36px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+    .buy { color: var(--buy); }
+    .sell { color: var(--sell); }
+    .neutral { color: var(--neutral); }
+
+    .confidence {
+      font-size: 18px;
+      color: var(--text);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+    }
+
+    .levels {
+      display: grid;
+      gap: 0;
+      border-top: 1px solid var(--line);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .level-row {
+      display: grid;
+      grid-template-columns: 170px 1fr;
+      align-items: center;
+      min-height: 72px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .level-row:last-child { border-bottom: 0; }
+
+    .level-label {
+      color: var(--muted-2);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .level-value {
+      text-align: right;
+      font-size: 30px;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+    }
+
+    .decision-footer {
+      display: grid;
+      grid-template-columns: 1fr 220px;
+      gap: 18px;
+    }
+
+    .mini-block {
+      display: grid;
+      gap: 8px;
+    }
+
+    .mini-title,
+    .panel-title {
+      font-size: 11px;
+      color: var(--muted-2);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 800;
+    }
+
+    .mini-text {
+      font-size: 14px;
+      line-height: 1.6;
+      color: #d6e2f7;
+    }
+
+    .mini-stats {
+      display: grid;
+      gap: 10px;
+    }
+
+    .stat {
+      display: grid;
+      gap: 4px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .stat:last-child { border-bottom: 0; }
+
+    .stat-k {
+      font-size: 10px;
+      color: var(--muted-2);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 800;
+    }
+
+    .stat-v {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text);
+    }
+
+    .analysis-panel {
+      padding: 22px;
+      display: grid;
+      gap: 16px;
+      min-height: 100%;
+    }
+
+    .analysis-text {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #d8e3f8;
+    }
+
+    .analysis-text strong { color: #ffffff; }
+
+    .divider {
+      height: 1px;
+      background: var(--line);
+    }
+
+.system-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+
+    .sys {
+      padding: 12px;
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      background: #0b1624;
+      display: grid;
+      gap: 5px;
+    }
+
+    .sys-k {
+      font-size: 10px;
+      color: var(--muted-2);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      font-weight: 800;
+    }
+
+.sys-v {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+/* ===== MARKET DRIVERS ===== */
+
+.drivers-panel{
+  margin-top:26px;
+  padding-top:20px;
+  border-top:1px solid rgba(138,165,204,0.16);
+}
+
+.driver-group{
+  margin-top:16px;
+}
+
+.driver-title{
+  font-size:11px;
+  letter-spacing:0.14em;
+  color:#7fa6ff;
+  text-transform:uppercase;
+  font-weight:900;
+  margin-bottom:6px;
+}
+
+.driver-group ul{
+  margin:0;
+  padding-left:18px;
+}
+
+.driver-group li{
+  font-size:14px;
+  color:#e6f0ff;
+  font-weight:600;
+  margin-bottom:4px;
+  line-height:1.5;
+}
+/* ===== DATA INFRASTRUCTURE ===== */
+
+.infra-list{
+  margin-top:10px;
+  display:grid;
+  gap:8px;
+}
+
+.infra-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:8px 0;
+  border-bottom:1px solid rgba(138,165,204,0.18);
+}
+
+.infra-label{
+  font-size:11px;
+  letter-spacing:0.12em;
+  color:#6f82a1;
+  text-transform:uppercase;
+  font-weight:800;
+}
+
+.infra-value{
+  font-size:13px;
+  color:#edf3ff;
+  font-weight:700;
+  text-align:right;
+}
+
+.data-box{
+  padding-top:14px;
+}
+
+    @media (max-width: 980px) {
+      .topbar,
+      .workspace,
+      .decision-footer,
+      .system-row {
+        grid-template-columns: 1fr;
+      }
+
+      .quick-assets { justify-content: flex-start; }
+      .decision-header { grid-template-columns: 1fr; }
+      .decision-box { justify-items: start; text-align: left; }
+      .level-row { grid-template-columns: 1fr; gap: 8px; padding: 14px 0; }
+      .level-value { text-align: left; }
+      .asset-name { font-size: 34px; }
+      .decision-value { font-size: 56px; }
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      .topbar, .workspace, .decision-panel, .analysis-panel { padding: 14px; }
+      .searchbar { grid-template-columns: 1fr; }
+      .run-btn { width: 100%; }
+      .asset-name { font-size: 30px; }
+      .decision-value { font-size: 48px; }
+      .level-value { font-size: 24px; }
+    }
+  </style>
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+  <div class="app">
+    <div class="shell">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-kicker">Institutional AI Terminal</div>
+          <div class="brand-title">Atlas Terminal</div>
+        </div>
+
+<div class="searchbar">
+
+  <div class="searchbox">
+    <span style="color:#6f82a1;">⌕</span>
+    <input type="text" placeholder="BTC, GOLD, EURUSD, OIL" />
+  </div>
+
+  <div class="action-stack">
+    <button class="run-btn">Run Analysis</button>
+
+    <div class="backtest-row">
+      <button class="secondary-btn backtest-btn">Backtest</button>
+
+<div id="backtest-results" class="backtest-inline">
+        Trades <span id="bt-trades">-</span> |
+        Win <span id="bt-winrate">-</span> |
+        Profit <span id="bt-profit">-</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+      </div>
+<div class="asset-nav">
+  <div class="asset-tabs">
+    <button class="asset-tab active" data-tab="crypto">Crypto</button>
+    <button class="asset-tab" data-tab="forex">Forex</button>
+    <button class="asset-tab" data-tab="indices">Indices</button>
+    <button class="asset-tab" data-tab="commodities">Commodities</button>
+    <button class="asset-tab" data-tab="stocks">Stocks</button>
+  </div>
+
+  <div class="asset-strip" id="asset-strip">
+    <button class="asset-chip active" data-asset="BTC">BTC</button>
+    <button class="asset-chip" data-asset="ETH">ETH</button>
+    <button class="asset-chip" data-asset="SOL">SOL</button>
+    <button class="asset-chip" data-asset="BNB">BNB</button>
+    <button class="asset-chip" data-asset="XRP">XRP</button>
+  </div>
+</div>
+<div class="workspace">
+  <div class="left-column">
+<div style="
+position:relative;
+height:280px;
+margin-bottom:6px;
+border-radius:18px;
+overflow:hidden;
+border:1px solid rgba(138,165,204,0.14);
+background:linear-gradient(180deg, rgba(11,22,36,0.96), rgba(8,17,27,0.98));
+">
+
+<div id="price-chart" style="height:100%;"></div>
+
+<div id="chart-placeholder" style="
+position:absolute;
+top:50%;
+left:50%;
+transform:translate(-50%,-50%);
+color:#6f82a1;
+font-size:14px;
+letter-spacing:0.08em;
+text-transform:uppercase;
+font-weight:700;
+">
+Select an asset to load market data
+</div>
+
+</div>
+
+      <aside class="analysis-panel">
+          <div class="system-row">
+
+  <div class="sys">
+    <div class="sys-k">Macro</div>
+    <div class="sys-v" id="macro-state">Awaiting signals</div>
+  </div>
+
+  <div class="sys">
+    <div class="sys-k">Cross-Asset</div>
+    <div class="sys-v" id="crossasset-state">Awaiting signals</div>
+  </div>
+
+  <div class="sys">
+    <div class="sys-k">Signal Quality</div>
+    <div class="sys-v" id="signal-state">Awaiting signals</div>
+  </div>
+
+  <div class="sys">
+    <div class="sys-k">Volatility</div>
+    <div class="sys-v" id="volatility-state">Awaiting signals</div>
+  </div>
+
+<div class="sys">
+  <div class="sys-k">Bond Yields</div>
+  <div class="sys-v" id="bond-state">Awaiting signals</div>
+</div>
+
+</div>
+<div class="drivers-panel">
+
+  <div class="panel-title">Market Drivers</div>
+
+  <div class="driver-group">
+    <div class="driver-title">Technical</div>
+    <ul id="driver-technical">
+      <li>Awaiting signals</li>
+    </ul>
+  </div>
+<div class="driver-group">
+  <div class="driver-title">Liquidity</div>
+  <ul id="driver-liquidity">
+    <li>Awaiting signals</li>
+  </ul>
+</div>
+<div class="driver-group">
+  <div class="driver-title">Crypto Flows</div>
+  <ul id="driver-crypto">
+    <li>Awaiting signals</li>
+  </ul>
+</div>
+<div class="driver-group">
+  <div class="driver-title">Positioning</div>
+  <ul id="driver-positioning">
+    <li>Awaiting signals</li>
+  </ul>
+</div>
+<div class="driver-group">
+  <div class="driver-title">Options Flow</div>
+  <ul id="driver-options">
+    <li>Awaiting signals</li>
+  </ul>
+</div>
+<div class="driver-group">
+  <div class="driver-title">Economic Data</div>
+  <ul id="driver-economic">
+    <li>Awaiting signals</li>
+  </ul>
+</div>
+  <div class="driver-group">
+    <div class="driver-title">Macro</div>
+    <ul id="driver-macro">
+      <li>Awaiting signals</li>
+    </ul>
+  </div>
+
+  <div class="driver-group">
+    <div class="driver-title">Cross-Asset</div>
+    <ul id="driver-crossasset">
+      <li>Awaiting signals</li>
+    </ul>
+  </div>
+
+  <div class="driver-group">
+    <div class="driver-title">Geopolitics</div>
+    <ul id="driver-geopolitics">
+      <li>Awaiting signals</li>
+    </ul>
+  </div>
+ 
+<div class="driver-group">
+  <div class="driver-title">Weather Risk</div>
+  <ul id="driver-weather">
+    <li>Awaiting signals</li>
+  </ul>
+</div>
+  <div class="driver-group">
+    <div class="driver-title">Market Events</div>
+    <ul id="driver-events">
+      <li>Awaiting signals</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="divider"></div>
+<div class="divider"></div>
+<div class="panel-title">AI Strategic Analysis</div>
+
+<div class="analysis-text" id="analysis-main">
+Awaiting analysis. The system will evaluate technical structure, macro regime, cross-asset flows, and geopolitical signals.
+</div>
+
+<div class="divider"></div>
+
+<div class="panel-title">Risk Assessment</div>
+
+<div class="analysis-text" id="analysis-risk">
+Risk analysis will appear here once the model completes evaluation.
+</div>        </aside>
+
+</div>
+
+        <section class="decision-panel">
+          <div class="decision-header">
+            <div class="asset-meta">
+<div class="asset-name">Select Asset</div>
+<div class="sub-meta">
+  <div class="pill" id="asset-type">Asset</div>
+<div class="pill">Model Verified</div>
+</div>
+ </div>
+
+<div class="decision-box">
+  <div class="decision-label">Trade Decision</div>
+  <div class="decision-value neutral">READY</div>
+  <div class="confidence">Awaiting analysis</div>
+<div id="confidence-breakdown" style="
+  margin-top:12px;
+  font-size:13px;
+  line-height:1.7;
+  color:#a9bbd8;
+  white-space:pre-line;
+  border-top:1px solid rgba(138,165,204,0.14);
+  padding-top:10px;
+">Awaiting attribution</div>
+</div>
+          </div>
+
+          <div class="levels">
+  <div class="level-row">
+    <div class="level-label">Entry</div>
+    <div class="level-value">Pending</div>
+  </div>
+  <div class="level-row">
+    <div class="level-label">Stop Loss</div>
+    <div class="level-value">Pending</div>
+  </div>
+  <div class="level-row">
+    <div class="level-label">Take Profit</div>
+    <div class="level-value">Pending</div>
+  </div>
+</div>
+
+<div class="decision-footer">
+
+  <div class="mini-stats">
+
+    <div class="stat">
+      <div class="stat-k">Global Regime</div>
+      <div class="stat-v" id="global-regime">Awaiting analysis</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-k">Regime</div>
+      <div class="stat-v" id="regime">Awaiting analysis</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-k">Structure</div>
+      <div class="stat-v" id="structure">Awaiting analysis</div>
+    </div>
+
+    <div class="stat">
+      <div class="stat-k">Execution</div>
+      <div class="stat-v" id="execution">Awaiting analysis</div>
+    </div>
+<div class="stat data-box">
+
+<div class="stat-k">Data Infrastructure</div>
+
+<div class="infra-list">
+
+<div class="infra-row">
+<div class="infra-label">Market Feed</div>
+<div class="infra-value" id="src-market">—</div>
+</div>
+
+<div class="infra-row">
+<div class="infra-label">Macro Data</div>
+<div class="infra-value" id="src-macro">—</div>
+</div>
+
+<div class="infra-row">
+<div class="infra-label">Rates Engine</div>
+<div class="infra-value" id="src-rates">—</div>
+</div>
+
+<div class="infra-row">
+<div class="infra-label">Volatility</div>
+<div class="infra-value" id="src-vol">—</div>
+</div>
+
+<div class="infra-row">
+<div class="infra-label">News Monitor</div>
+<div class="infra-value" id="src-news">—</div>
+</div>
+
+<div class="infra-row">
+<div class="infra-label">Status</div>
+<div class="infra-value" id="src-status">LIVE</div>
+</div>
+
+<div class="infra-row">
+<div class="infra-label">Last Update</div>
+<div class="infra-value" id="src-update">—</div>
+</div>
+<div class="stat">
+  <div class="stat-k">Track Record</div>
+  <div class="stat-v" id="track-record">
+    Trades - | Win - | PnL -
+  </div>
+</div>
+
+</div>
+</div>
+  </div>
+</div>
+</section>
+
+             </div>
+    </div>
+  </div>
+<script>
+
+const API = "http://localhost:3000/analyze";
+const BACKTEST_API = "http://localhost:3000/backtest";
+/* ASSET UNIVERSE */
+
+const ASSETS = {
+  crypto: [
+    "BTC","ETH","SOL","BNB","XRP","ADA","AVAX","LINK","MATIC","DOGE"
+  ],
+
+  forex: [
+    "EURUSD","GBPUSD","USDJPY","USDCHF","USDCAD","AUDUSD","NZDUSD",
+    "EURJPY","EURGBP","GBPJPY"
+  ],
+
+  indices: [
+    "SPX","NDX","DJI","RUT","DAX","FTSE","CAC40","EUROSTOXX","NIKKEI","HANGSENG"
+  ],
+
+  commodities: [
+    "GOLD","SILVER","OIL","BRENT","NATGAS","COPPER","PLATINUM","WHEAT","CORN","SOYBEANS"
+  ],
+
+  stocks: [
+    "AAPL","GOOGL","MSFT","AMZN","META","TSLA","NVDA","JPM","V","DIS"
+  ]
+};
+async function runAnalysis(){
+
+  /* RESET BACKTEST PANEL */
+
+  document.getElementById("backtest-results").style.display = "none";
+
+  document.getElementById("bt-trades").innerText = "-";
+  document.getElementById("bt-winrate").innerText = "-";
+  document.getElementById("bt-profit").innerText = "-";
+
+const btn = document.querySelector(".run-btn");
+btn.innerText = "Analyzing...";
+btn.disabled = true;
+
+const asset = document.querySelector(".searchbox input").value.trim().toUpperCase();
+
+// Check if asset exists in ASSETS
+const allAssets = [...ASSETS.crypto, ...ASSETS.forex, ...ASSETS.indices, ...ASSETS.commodities, ...ASSETS.stocks];
+
+if(!asset){
+  alert("Enter an asset or select one from the asset panel.");
+  btn.innerText = "Run Analysis";
+  btn.disabled = false;
+  return;
+}
+
+if(!allAssets.includes(asset)){
+  document.querySelector(".asset-name").innerText = "Unavailable";
+  const decision = document.querySelector(".decision-value");
+  decision.innerText = "N/A";
+  decision.classList.remove("buy","sell","neutral");
+  decision.classList.add("neutral");
+  document.querySelectorAll(".level-value")[0].innerText = "-";
+  document.querySelectorAll(".level-value")[1].innerText = "-";
+  document.querySelectorAll(".level-value")[2].innerText = "-";
+  document.querySelector(".confidence").innerText = "";
+  document.getElementById("asset-type").innerText = "-";
+  document.getElementById("analysis-main").innerText = "Asset data unavailable or not reachable.";
+  document.getElementById("analysis-risk").innerText = "-";
+  document.getElementById("regime").innerText = "-";
+  document.getElementById("structure").innerText = "-";
+  document.getElementById("execution").innerText = "-";
+  document.getElementById("macro-state").innerText = "-";
+  document.getElementById("crossasset-state").innerText = "-";
+  document.getElementById("signal-state").innerText = "-";
+document.getElementById("volatility-state").innerText = "-";
+  btn.innerText = "Run Analysis";
+  btn.disabled = false;
+  return;
+}
+let data;
+try {
+  const res = await fetch(API, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ asset })
+  });
+  data = await res.json();
+} catch (err) {
+  data = { error: true };
+}
+
+/* --- HANDLE MISSING OR UNREACHABLE ASSETS --- */
+if (!data || data.error || !data.direction) {
+  document.querySelector(".asset-name").innerText = "Unavailable";
+const decision = document.querySelector(".decision-value");
+  decision.innerText = "N/A";
+  decision.classList.remove("buy", "sell", "neutral");
+  decision.classList.add("neutral");
+  document.querySelectorAll(".level-value")[0].innerText = "-";
+  document.querySelectorAll(".level-value")[1].innerText = "-";
+  document.querySelectorAll(".level-value")[2].innerText = "-";
+  document.querySelector(".confidence").innerText = "";
+  document.getElementById("asset-type").innerText = "-";
+  document.getElementById("analysis-main").innerText = "Asset data unavailable or not reachable.";
+  document.getElementById("analysis-risk").innerText = "-";
+  document.getElementById("regime").innerText = "-";
+  document.getElementById("structure").innerText = "-";
+  document.getElementById("execution").innerText = "-";
+  document.getElementById("macro-state").innerText = "-";
+  document.getElementById("crossasset-state").innerText = "-";
+  document.getElementById("signal-state").innerText = "-";
+document.getElementById("volatility-state").innerText = "-";
+  btn.innerText = "Run Analysis";
+  btn.disabled = false;
+  return;
+}
+
+document.querySelector(".asset-name").innerText = asset;
+// TRACK RECORD FETCH
+try {
+  const tr = await fetch("http://localhost:3000/track-record")
+    .then(r => r.json());
+
+  document.getElementById("track-record").innerText =
+    `Trades ${tr.trades} | Win ${tr.winRate.toFixed(1)}% | PnL ${tr.totalProfit.toFixed(2)}`;
+} catch {
+  document.getElementById("track-record").innerText = "No data";
+}
+loadCandles(asset);
+const decision = document.querySelector(".decision-value");
+
+decision.innerText = data.direction.replace("_"," ");
+decision.classList.remove("buy","sell","neutral");
+
+if(data.direction === "BUY") decision.classList.add("buy");
+else if(data.direction === "SELL") decision.classList.add("sell");
+else decision.classList.add("neutral");
+if(data.direction === "NO_TRADE"){
+  document.querySelectorAll(".level-value")[0].innerText = "No Setup";
+  document.querySelectorAll(".level-value")[1].innerText = "—";
+  document.querySelectorAll(".level-value")[2].innerText = "—";
+}
+let confidenceText = "Confidence " + data.confidence + "%";
+
+if(data.direction === "NO_TRADE"){
+  confidenceText = "Conviction " + data.confidence + "%";
+}
+
+document.querySelector(".confidence").innerText = confidenceText;
+if (data.confidence_breakdown) {
+  document.getElementById("confidence-breakdown").innerHTML =
+    `<div style="display:flex;justify-content:space-between;gap:16px;"><span>Technical</span><strong>${data.confidence_breakdown.technical > 0 ? "+" : ""}${data.confidence_breakdown.technical}</strong></div>` +
+    `<div style="display:flex;justify-content:space-between;gap:16px;"><span>Macro</span><strong>${data.confidence_breakdown.macro > 0 ? "+" : ""}${data.confidence_breakdown.macro}</strong></div>` +
+    `<div style="display:flex;justify-content:space-between;gap:16px;"><span>Cross-Asset</span><strong>${data.confidence_breakdown.crossAsset > 0 ? "+" : ""}${data.confidence_breakdown.crossAsset}</strong></div>` +
+    `<div style="display:flex;justify-content:space-between;gap:16px;"><span>Geopolitics</span><strong>${data.confidence_breakdown.geopolitics > 0 ? "+" : ""}${data.confidence_breakdown.geopolitics}</strong></div>`;
+} else {
+  document.getElementById("confidence-breakdown").innerText = "Attribution unavailable";
+}
+document.getElementById("asset-type").innerText = data.asset;
+if(data.direction !== "NO_TRADE"){
+document.querySelectorAll(".level-value")[0].innerText =
+  data.entry ? Number(data.entry).toFixed(5) : "N/A";
+
+document.querySelectorAll(".level-value")[1].innerText =
+  data.stop_loss ? Number(data.stop_loss).toFixed(5) : "—";
+
+document.querySelectorAll(".level-value")[2].innerText =
+  data.targets
+    ? data.targets.map(t => Number(t).toFixed(5)).join(" / ")
+    : "—";
+}
+
+document.getElementById("analysis-main").innerText = data.explanation;
+document.getElementById("analysis-risk").innerText = data.risk || "";
+document.getElementById("regime").innerText = data.regime;
+document.getElementById("global-regime").innerText =
+  data.global_regime || "Neutral";
+document.getElementById("structure").innerText = data.structure;
+document.getElementById("execution").innerText = data.execution;
+document.getElementById("macro-state").innerText =
+  data.macro || data.regime || "Neutral";
+document.getElementById("crossasset-state").innerText =
+  data.cross_asset || "Mixed";
+document.getElementById("signal-state").innerText =
+  data.signal_quality || "Developing";
+/* VOLATILITY DISPLAY */
+
+let regime = "";
+let pct = "";
+
+if (data.drivers && data.drivers.technical) {
+
+  const volLine = data.drivers.technical.find(d => d.startsWith("Volatility:"));
+  const pctLine = data.drivers.technical.find(d => d.startsWith("Vol Percentile:"));
+
+  if (volLine) regime = volLine.split(":")[1].trim();
+  if (pctLine) pct = pctLine.split(":")[1].trim();
+}
+
+let text = regime || "Unknown";
+
+if (pct) {
+  text += "\nRV " + pct;
+}
+
+if (data.vix_level) {
+  text += "\nVIX " + Number(data.vix_level).toFixed(2);
+}
+
+document.getElementById("volatility-state").innerText = text;
+
+/* BOND YIELDS */
+
+if(data.bond){
+
+  let bondText =
+    "10Y " + Number(data.bond.us10y).toFixed(2) + "\n" +
+    "2Y " + Number(data.bond.us02y).toFixed(2) + "\n" +
+    "Curve " + Number(data.bond.curve).toFixed(2) + "\n" +
+    data.bond.regime;
+
+  document.getElementById("bond-state").innerText = bondText;
+
+}else{
+
+  document.getElementById("bond-state").innerText = "-";
+
+}
+/* ===== MARKET DRIVERS ===== */
+
+if(data.drivers){
+
+  document.getElementById("driver-technical").innerHTML =
+    (data.drivers.technical || []).map(d => `<li>${d}</li>`).join("") || "<li>No signal</li>";
+
+  document.getElementById("driver-macro").innerHTML =
+    (data.drivers.macro || []).map(d => `<li>${d}</li>`).join("") || "<li>No signal</li>";
+document.getElementById("driver-liquidity").innerHTML =
+  (data.drivers.liquidity || []).map(d => `<li>${d}</li>`).join("") || "<li>No signal</li>";
+if(data.crypto_flows && data.crypto_flows.summary){
+  document.getElementById("driver-crypto").innerHTML =
+    data.crypto_flows.summary.map(d => `<li>${d}</li>`).join("");
+}
+
+/* POSITIONING */
+
+if(data.positioning){
+
+  const p = data.positioning;
+
+  let list = [];
+
+  if(p.fundingRate !== undefined)
+    list.push(`Funding Rate: ${Number(p.fundingRate).toFixed(4)}`);
+
+  if(p.longShortRatio !== undefined)
+    list.push(`Long/Short Ratio: ${Number(p.longShortRatio).toFixed(2)}`);
+
+  if(p.openInterest !== undefined)
+    list.push(`Open Interest: ${Number(p.openInterest).toLocaleString()}`);
+
+  if(p.positioningBias)
+    list.push(`Bias: ${p.positioningBias}`);
+
+  if(p.liquidationRisk)
+    list.push(`Liquidation Risk: ${p.liquidationRisk}`);
+/* LIQUIDATION ZONES */
+
+if(data.liquidation){
+
+  const l = data.liquidation;
+
+  if(l.shortLiquidationLevel)
+    list.push(`Short Liquidations: ${Number(l.shortLiquidationLevel).toLocaleString()}`);
+
+  if(l.longLiquidationLevel)
+    list.push(`Long Liquidations: ${Number(l.longLiquidationLevel).toLocaleString()}`);
+
+  if(l.squeezeBias)
+    list.push(`Squeeze Bias: ${l.squeezeBias}`);
+
+}
+
+  document.getElementById("driver-positioning").innerHTML =
+    list.map(v => `<li>${v}</li>`).join("");
+/* OPTIONS FLOW */
+
+if(data.options_flow){
+  const o = data.options_flow;
+
+  let list = [];
+
+  if(o.putCallRatio !== undefined)
+    list.push(`Put/Call Ratio: ${Number(o.putCallRatio).toFixed(2)}`);
+
+  if(o.skew !== undefined)
+    list.push(`Options Skew: ${Number(o.skew).toFixed(2)}`);
+
+  if(o.gammaExposure !== undefined)
+    list.push(`Gamma Exposure: ${Number(o.gammaExposure).toLocaleString()}`);
+
+  if(o.openInterest !== undefined)
+    list.push(`Options OI: ${Number(o.openInterest).toLocaleString()}`);
+
+  if(o.bias)
+    list.push(`Options Bias: ${o.bias}`);
+
+document.getElementById("driver-options").innerHTML =
+  list.length ? list.map(v => `<li>${v}</li>`).join("") : "<li>No options signal</li>";
+
+}
+}
+  document.getElementById("driver-crossasset").innerHTML =
+    (data.drivers.cross_asset || []).map(d => `<li>${d}</li>`).join("") || "<li>No signal</li>";
+
+  document.getElementById("driver-geopolitics").innerHTML =
+    (data.drivers.geopolitics || []).map(d => `<li>${d}</li>`).join("") || "<li>No signal</li>";
+document.getElementById("driver-economic").innerHTML =
+  (data.economic_data || [])
+    .map(e => `<li>${e.event} | Surprise ${e.surprise} | ${e.bias}</li>`)
+    .join("") || "<li>No economic signals</li>";
+  document.getElementById("driver-events").innerHTML =
+    (data.drivers.events || []).map(d => `<li>${d}</li>`).join("") || "<li>No signal</li>";
+if(data.drivers && data.drivers.weather){
+
+  const w = data.drivers.weather;
+
+  document.getElementById("driver-weather").innerHTML =
+    `<li>Risk: ${w.risk} (${w.severity})</li>` +
+    `<li>Impact: ${w.impact}</li>` +
+    `<li>Regions: ${(w.regions || []).join(", ") || "N/A"}</li>` +
+    `<li>Assets: ${(w.assets || []).join(", ") || "N/A"}</li>` +
+    `<li>Bias: ${(w.directionalBias || []).join(", ") || "N/A"}</li>`;
+
+}else{
+
+  document.getElementById("driver-weather").innerHTML =
+    "<li>No weather risk</li>";
+
+}
+
+}
+/* ===== DATA INFRASTRUCTURE ===== */
+
+if(data.data_sources){
+
+  const src = data.data_sources;
+
+document.getElementById("src-market").innerText = src.market || "-";
+
+document.getElementById("src-macro").innerText =
+  Array.isArray(src.macro) ? src.macro.join(", ") : (src.macro || "-");
+
+document.getElementById("src-rates").innerText =
+  src.rates || "-";
+
+document.getElementById("src-vol").innerText =
+  src.volatility || "-";
+
+document.getElementById("src-news").innerText =
+  src.news || "-";
+
+document.getElementById("src-status").innerText =
+  data.data_status || "LIVE";
+
+document.getElementById("src-update").innerText =
+  data.last_update || "-";
+
+}
+
+
+btn.innerText = "Run Analysis";
+btn.disabled = false;
+
+}   // <-- END of runAnalysis()
+
+async function runBacktest(){
+
+  const asset = document.querySelector(".searchbox input")
+                .value.trim().toUpperCase();
+
+  if(!asset){
+    alert("Enter an asset first");
+    return;
+  }
+
+  const btn = document.querySelector(".run-btn");
+  btn.innerText = "Backtesting...";
+  btn.disabled = true;
+
+  try{
+
+    const res = await fetch(BACKTEST_API,{
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ asset })
+    });
+
+    const data = await res.json();
+
+document.getElementById("backtest-results").style.display = "block";
+
+document.getElementById("bt-trades").innerText = data.trades;
+document.getElementById("bt-winrate").innerText = data.winRate.toFixed(2) + "%";
+document.getElementById("bt-profit").innerText = data.totalProfit.toFixed(2);
+document.getElementById("bt-wins").innerText = data.wins;
+document.getElementById("bt-losses").innerText = data.losses;
+
+  }catch(e){
+
+console.error("Backtest failed");
+
+  }
+
+  btn.innerText = "Run Analysis";
+  btn.disabled = false;
+
+}
+document.querySelector(".run-btn").onclick = runAnalysis;
+document.querySelector(".backtest-btn").onclick = runBacktest;
+document.querySelector(".searchbox input")
+  .addEventListener("keypress", function(e){
+    if(e.key === "Enter") runAnalysis();
+});
+/* ASSET CHIP CONTROL */
+
+document.querySelectorAll(".asset-chip").forEach(btn => {
+
+  btn.onclick = function(){
+
+    const asset = this.dataset.asset;
+
+    /* put asset in search box */
+
+    document.querySelector(".searchbox input").value = asset;
+
+    /* highlight selected chip */
+
+    document.querySelectorAll(".asset-chip")
+      .forEach(c => c.classList.remove("active"));
+
+    this.classList.add("active");
+
+    /* run analysis automatically */
+
+    runAnalysis();
+
+  };
+
+});
+/* TAB SWITCHING */
+
+document.querySelectorAll(".asset-tab").forEach(tab => {
+
+  tab.onclick = function(){
+
+    const type = this.dataset.tab;
+
+    document.querySelectorAll(".asset-tab")
+      .forEach(t => t.classList.remove("active"));
+
+    this.classList.add("active");
+
+    const strip = document.getElementById("asset-strip");
+
+    strip.innerHTML = "";
+
+    ASSETS[type].forEach(asset => {
+
+      const btn = document.createElement("button");
+
+      btn.className = "asset-chip";
+      btn.dataset.asset = asset;
+      btn.innerText = asset;
+
+      btn.onclick = function(){
+
+        document.querySelector(".searchbox input").value = asset;
+
+        document.querySelectorAll(".asset-chip")
+          .forEach(c => c.classList.remove("active"));
+
+        this.classList.add("active");
+
+        runAnalysis();
+
+      };
+
+      strip.appendChild(btn);
+
+    });
+
+  };
+
+});
+/* PRICE CHART */
+
+const container = document.getElementById('price-chart');
+
+const chart = LightweightCharts.createChart(container, {
+  width: container.offsetWidth,
+  height: 320,
+    layout:{
+      background:{color:'#0b1624'},
+      textColor:'#91a4c2'
+    },
+
+    grid:{
+      vertLines:{color:'rgba(138,165,204,0.05)'},
+      horzLines:{color:'rgba(138,165,204,0.05)'}
+    },
+    crosshair:{mode:1},
+    rightPriceScale:{
+      borderColor:'rgba(138,165,204,0.15)'
+    },
+    timeScale:{
+      borderColor:'rgba(138,165,204,0.15)'
+    }
+  }
+);
+window.addEventListener('resize', () => {
+  chart.applyOptions({ width: document.getElementById('price-chart').clientWidth });
+});
+const series = chart.addSeries(LightweightCharts.CandlestickSeries);
+/* temporary demo data */
+
+async function loadCandles(symbol){
+
+  let assetClass = "crypto";
+
+  if(ASSETS.forex.includes(symbol)) assetClass = "forex";
+  else if(ASSETS.indices.includes(symbol)) assetClass = "index";
+  else if(ASSETS.commodities.includes(symbol)) assetClass = "energy";
+  else if(ASSETS.stocks.includes(symbol)) assetClass = "stock";
+
+  try{
+
+    const res = await fetch(
+      `http://localhost:3000/candles?symbol=${symbol}&assetClass=${assetClass}&interval=1h`
+    );
+
+    const data = await res.json();
+
+    if(!Array.isArray(data) || data.length === 0){
+      series.setData([]);
+      return;
+    }
+
+    const candles = data.map(c => ({
+      time: Math.floor(c.timestamp / 1000),
+      open: c.open,
+      high: c.high,
+      low: c.low,
+      close: c.close
+    }));
+
+series.setData(candles);
+document.getElementById("chart-placeholder").style.display = "none";
+  }catch(e){
+
+    series.setData([]);
+
+  }
+
+}
+loadCandles("BTC");
+</script>
+</body>
+</html>

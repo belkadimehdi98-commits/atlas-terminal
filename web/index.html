@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Atlas Terminal</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial, Helvetica, sans-serif;
+background:#0b0f14;
+color:white;
+}
+
+header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 25px;
+background:#121821;
+border-bottom:1px solid #1f2933;
+}
+
+.logo{
+font-weight:700;
+font-size:18px;
+letter-spacing:1px;
+}
+
+.search{
+display:flex;
+gap:10px;
+}
+
+input{
+background:#1a222d;
+border:none;
+padding:10px;
+color:white;
+width:250px;
+}
+
+button{
+background:#00c2ff;
+border:none;
+padding:10px 20px;
+cursor:pointer;
+font-weight:600;
+}
+
+.layout{
+display:grid;
+grid-template-columns:250px 1fr 320px;
+height:calc(100vh - 60px);
+}
+
+.sidebar{
+background:#121821;
+border-right:1px solid #1f2933;
+padding:15px;
+}
+
+.asset{
+padding:10px;
+margin-bottom:8px;
+background:#1a222d;
+cursor:pointer;
+}
+
+.main{
+padding:20px;
+}
+
+.chart{
+height:400px;
+background:#1a222d;
+display:flex;
+align-items:center;
+justify-content:center;
+margin-bottom:20px;
+}
+
+.panel{
+background:#1a222d;
+padding:15px;
+margin-bottom:15px;
+}
+
+.right{
+background:#121821;
+border-left:1px solid #1f2933;
+padding:15px;
+}
+
+.signal{
+font-size:22px;
+font-weight:700;
+margin-bottom:10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="logo">ATLAS TERMINAL</div>
+
+<div class="search">
+<input placeholder="Search asset (oil, gold, btc, eurusd)">
+<button>Search</button>
+</div>
+
+</header>
+
+<div class="layout">
+
+<div class="sidebar">
+
+<div class="asset">BTCUSDT</div>
+<div class="asset">ETHUSDT</div>
+<div class="asset">XAUUSD</div>
+<div class="asset">EURUSD</div>
+<div class="asset">OIL</div>
+
+</div>
+
+<div class="main">
+
+<div class="chart">
+Chart panel
+</div>
+
+<div class="panel">
+<b>AI Analysis</b>
+<p>Technical structure is bullish while macro risk remains elevated. Traders should watch oil volatility and central bank rhetoric.</p>
+</div>
+
+<div class="panel">
+<b>Technical</b>
+<p>Trend: Bullish</p>
+<p>Momentum: Strong</p>
+<p>Structure: Breakout retest</p>
+</div>
+
+<div class="panel">
+<b>Fundamental</b>
+<p>Geopolitical tension and energy shocks are driving inflation expectations.</p>
+</div>
+
+</div>
+
+<div class="right">
+
+<div class="panel">
+
+<div class="signal">BUY</div>
+
+<p>Confidence: 78%</p>
+<p>Entry: 70150 - 70640</p>
+<p>Stop Loss: 69780</p>
+
+<p>Targets:</p>
+
+<ul>
+<li>71900</li>
+<li>73300</li>
+</ul>
+
+</div>
+
+</div>
+
+</div>
+
+</body>
+</html>
