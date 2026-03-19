@@ -1433,7 +1433,7 @@ const chart = LightweightCharts.createChart(container, {
 window.addEventListener('resize', () => {
   chart.applyOptions({ width: document.getElementById('price-chart').clientWidth });
 });
-const series = chart.addCandlestickSeries();
+const series = chart.addSeries(LightweightCharts.CandlestickSeries, {});
 /* temporary demo data */
 
 async function loadCandles(symbol){
