@@ -31,6 +31,7 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/analyze", async (req, res) => {
+console.log("STEP 1: start analyze");
   try {
   const rawInput = req.body.asset;
 
