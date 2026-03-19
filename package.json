@@ -2,14 +2,15 @@
   "name": "atlasterminal",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/server.js",
   "directories": {
     "doc": "docs",
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node dist/server.js"
+    "build": "tsc",
+    "start": "npm run build && node dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
@@ -20,7 +21,9 @@
     "cors": "^2.8.6",
     "dotenv": "^17.3.1",
     "express": "^5.2.1",
-    "openai": "^6.32.0",
+    "openai": "^6.32.0"
+  },
+  "devDependencies": {
     "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
