@@ -31,7 +31,7 @@ app.use(cors());
 app.use(express.json());
 
 app.post("/analyze", async (req, res) => {
-
+  try {
   const rawInput = req.body.asset;
 
   const asset = SymbolResolver.resolve(rawInput);
@@ -236,8 +236,15 @@ last_update: new Date().toISOString()
 
 });
 
-}); // CLOSE /analyze ROUTE
+  } catch (error: any) {
+    console.error("ANALYZE ERROR:", error);
 
+    res.status(500).json({
+      error: "Internal error",
+      message: error?.message || "unknown"
+    });
+  }
+}); // CLOSE /analyze ROUTE
 app.get("/candles", async (req, res) => {
 
   try {
