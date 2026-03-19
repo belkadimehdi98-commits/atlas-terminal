@@ -41,8 +41,11 @@ console.log("STEP 1: start analyze");
   const router = new MarketRouter();
   const price = await router.getPrice(asset);
 console.log("STEP 2: price loaded", price);
+try {
   await closeTrades();
-
+} catch (e) {
+  console.error("closeTrades failed", e);
+}
   const technicalEngine = new TechnicalEngine(asset, timeframe);
   const technical = await technicalEngine.run();
 

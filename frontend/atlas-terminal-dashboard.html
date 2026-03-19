@@ -991,12 +991,20 @@ document.getElementById("volatility-state").innerText = "-";
 }
 let data;
 try {
-  const res = await fetch(API, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ asset })
-  });
-  data = await res.json();
+const res = await fetch(API, {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ asset })
+});
+
+const text = await res.text();
+
+try {
+  data = JSON.parse(text);
+} catch (e) {
+  console.error("RAW ANALYZE RESPONSE:", text);
+  throw new Error("Backend returned invalid JSON");
+}
 } catch (err) {
   data = { error: true };
 }
@@ -1031,8 +1039,15 @@ document.querySelector(".asset-name").innerText = asset;
 // TRACK RECORD FETCH
 try {
   const tr = await fetch("https://atlas-terminal-6p91.onrender.com/track-record")
-    .then(r => r.json());
-
+    .then(async (r) => {
+      const text = await r.text();
+      try {
+        return JSON.parse(text);
+      } catch {
+        console.error("RAW RESPONSE:", text);
+        throw new Error("Invalid JSON from backend");
+      }
+    });
   document.getElementById("track-record").innerText =
     `Trades ${tr.trades} | Win ${tr.winRate.toFixed(1)}% | PnL ${tr.totalProfit.toFixed(2)}`;
 } catch {

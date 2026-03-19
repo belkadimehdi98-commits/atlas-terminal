@@ -5,9 +5,14 @@ export async function closeTrades() {
 
   const router = new MarketRouter();
 
-  const openTrades = JSON.parse(
-    fs.readFileSync("open-trades.json", "utf-8")
-  );
+let openTrades: any[] = [];
+
+try {
+  const raw = fs.readFileSync("open-trades.json", "utf-8");
+  openTrades = raw ? JSON.parse(raw) : [];
+} catch {
+  openTrades = [];
+}
 
   const remainingTrades: any[] = [];
 

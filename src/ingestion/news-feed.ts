@@ -12,11 +12,7 @@ export class NewsFeed {
   private apiKey: string;
 
   constructor() {
-    if (!process.env.NEWS_API_KEY) {
-      throw new Error("NEWS_API_KEY missing in environment variables");
-    }
-
-    this.apiKey = process.env.NEWS_API_KEY;
+    this.apiKey = process.env.NEWS_API_KEY || "";
   }
 
   async fetchMarketNews(asset: string): Promise<NewsItem[]> {
@@ -80,8 +76,13 @@ export class NewsFeed {
     const url =
       `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=en&sortBy=publishedAt&pageSize=20&apiKey=${this.apiKey}`;
 
-    const res = await axios.get(url);
+let res;
 
+try {
+  res = await axios.get(url);
+} catch {
+  return [];
+}
     return res.data.articles.map((a: any) => ({
       title: a.title,
       source: a.source?.name || "Unknown",
