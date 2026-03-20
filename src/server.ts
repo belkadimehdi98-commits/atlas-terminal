@@ -31,6 +31,46 @@ app.use(express.json());
 
 app.post("/api/analyze", async (req, res) => {
 console.log("STEP 1: start analyze");
+// === TRIAL GATE (TEMP) ===
+const deviceId =
+  req.headers["x-device-id"] ||
+  req.body.device_id ||
+  req.ip ||
+  "unknown";
+
+// simple memory store
+(global as any).usageStore = (global as any).usageStore || {};
+
+const store = (global as any).usageStore;
+
+if (!store[deviceId]) {
+  store[deviceId] = { count: 0 };
+}
+
+const userId = req.headers["x-user-id"] || null;
+
+const maxFree = 3;
+const maxWithAccount = 5;
+
+const currentCount = store[deviceId].count;
+
+if (!userId && currentCount >= maxFree) {
+  return res.status(403).json({
+    error: "SIGNUP_REQUIRED",
+    message: "Create account to continue"
+  });
+}
+
+if (userId && currentCount >= maxWithAccount) {
+  return res.status(403).json({
+    error: "SUBSCRIPTION_REQUIRED",
+    message: "Subscribe to continue"
+  });
+}
+
+store[deviceId].count += 1;
+
+console.log("USAGE:", deviceId, store[deviceId].count);
   try {
   const rawInput = req.body.asset;
 
