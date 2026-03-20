@@ -29,7 +29,7 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.post("/analyze", async (req, res) => {
+app.post("/api/analyze", async (req, res) => {
 console.log("STEP 1: start analyze");
   try {
   const rawInput = req.body.asset;
@@ -274,7 +274,7 @@ app.get("/candles", async (req, res) => {
   }
 
 });
-app.post("/backtest", async (req, res) => {
+app.post("/api/backtest", async (req, res) => {
 
   const rawInput = req.body.asset;
   const asset = SymbolResolver.resolve(rawInput);
