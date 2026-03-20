@@ -608,6 +608,7 @@ margin-left:6px;
     <button class="run-btn">Run Analysis</button>
  <button id="login-btn" class="secondary-btn">Login</button>
 <button id="signup-btn" class="secondary-btn">Sign Up</button>
+<button id="google-btn" class="secondary-btn">Google</button>
 
     <div class="backtest-row">
       <button class="secondary-btn backtest-btn">Backtest</button>
@@ -1395,10 +1396,7 @@ document.getElementById("src-update").innerText =
 
 }
 
-if (!userId) {
-  guestTries++;
-  localStorage.setItem("guest_tries", guestTries);
-}
+
 btn.innerText = "Run Analysis";
 btn.disabled = false;
 
@@ -1482,6 +1480,14 @@ document.getElementById("signup-btn").onclick = () => {
   const email = prompt("Email:");
   const password = prompt("Password:");
   signup(email, password);
+};
+document.getElementById("google-btn").onclick = async () => {
+  await supabaseClient.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: window.location.origin
+    }
+  });
 };
 document.querySelector(".backtest-btn").onclick = runBacktest;
 document.querySelector(".searchbox input")
