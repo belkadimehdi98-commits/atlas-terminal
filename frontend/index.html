@@ -931,11 +931,22 @@ async function getUser() {
 }
 getUser();
 async function login(email, password) {
-const { data, error } = await supabaseClient.auth.signInWithPassword({
-console.log("LOGIN RESULT:", { data, error });
+async function login(email, password) {
+  const { data, error } = await supabaseClient.auth.signInWithPassword({
     email,
     password
   });
+
+  console.log("LOGIN RESULT:", { data, error });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  userId = data.user.id;
+  alert("Logged in");
+}
 
   if (error) {
     alert(error.message);
