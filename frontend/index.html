@@ -923,6 +923,8 @@ const supabaseClient = supabase.createClient(
 
 let userId = null;
 let guestTries = parseInt(localStorage.getItem("guest_tries") || "0");
+let userTries = parseInt(localStorage.getItem("user_tries") || "0");
+let lastUserTryAt = localStorage.getItem("last_user_try_at") || null;
 
 // CHECK SESSION ON PAGE LOAD
 window.addEventListener('load', async () => {
@@ -1021,9 +1023,34 @@ const ASSETS = {
   ]
 };
 async function runAnalysis(){
-if (!userId && guestTries >= 3) {
-  alert("Free limit reached. Please sign up.");
-  return;
+const now = Date.now();
+
+if (!userId) {
+  // Guest: 3 free tries total
+  if (guestTries >= 3) {
+    alert("Free limit reached. Please sign up.");
+    return;
+  }
+  guestTries++;
+  localStorage.setItem("guest_tries", guestTries);
+} else {
+  // Logged-in user
+  const last = parseInt(localStorage.getItem("last_user_try_at") || "0");
+
+  if (userTries < 2) {
+    // First 2 free tries
+    userTries++;
+    localStorage.setItem("user_tries", userTries);
+    localStorage.setItem("last_user_try_at", now);
+  } else {
+    // After → 1 per 24h
+    if (now - last < 24 * 60 * 60 * 1000) {
+      alert("Daily limit reached. Come back tomorrow.");
+      return;
+    }
+    // allow 1 try, reset last_user_try_at
+    localStorage.setItem("last_user_try_at", now);
+  }
 }
 
   /* RESET BACKTEST PANEL */
