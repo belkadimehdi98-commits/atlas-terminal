@@ -25,6 +25,12 @@ import { getPositioning } from "./ingestion/positioning-router";
 import { runLiquidationEngine } from "./intelligence/liquidation-engine";
 import { runOptionsIntelligence } from "./intelligence/options-intelligence-engine";
 import { analyzeWeatherShock } from "./intelligence/weather-shock-engine";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 const app = express();
 app.use(cors());
 app.use(express.json());
