@@ -922,6 +922,7 @@ const supabaseClient = supabase.createClient(
 );
 
 let userId = null;
+let guestTries = parseInt(localStorage.getItem("guest_tries") || "0");
 
 // CHECK SESSION ON PAGE LOAD
 window.addEventListener('load', async () => {
@@ -1020,6 +1021,10 @@ const ASSETS = {
   ]
 };
 async function runAnalysis(){
+if (!userId && guestTries >= 3) {
+  alert("Free limit reached. Please sign up.");
+  return;
+}
 
   /* RESET BACKTEST PANEL */
 
@@ -1363,7 +1368,10 @@ document.getElementById("src-update").innerText =
 
 }
 
-
+if (!userId) {
+  guestTries++;
+  localStorage.setItem("guest_tries", guestTries);
+}
 btn.innerText = "Run Analysis";
 btn.disabled = false;
 
