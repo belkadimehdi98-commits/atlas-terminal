@@ -17,7 +17,6 @@ import { MacroEngine } from "./intelligence/macro-engine";
 import { GeopoliticsEngine } from "./intelligence/geopolitics-engine";
 import { economicCalendarEngine } from "./engines/economic-calendar-engine";
 import { ThesisEngine } from "./intelligence/thesis-engine";
-import { aiReviewEngine } from "./ai/ai-review-engine";
 import { vixEngine } from "./intelligence/vix-engine";
 import { bondYieldEngine } from "./intelligence/bond-yield-engine";
 import { runBacktest } from "./backtesting/backtest-engine";
@@ -87,15 +86,28 @@ const weatherShock = await analyzeWeatherShock(events);
 const aiDecision = await aiDecisionEngine({
   asset,
   price,
-  technical,
-  macro,
-  crossAsset,
-  geopolitics,
-  liquidity,
-  cryptoFlows,
-  vix,
-bonds,
-weather: weatherShock
+
+  technical: {
+    trend: technical.trend,
+    momentum: technical.momentum,
+    structure: technical.structure
+  },
+
+  macro: macro.summary.regime,
+
+  geopolitics: geopolitics.impactChain,
+
+  liquidity: liquidity.summary,
+
+  crossAsset: "flows detected",
+
+  cryptoFlows: cryptoFlows?.signal || null,
+
+  vix: vix.value,
+
+  bonds: bonds,
+
+  weather: weatherShock || null
 });
 
 const decisionEngine = new DecisionEngine();
@@ -112,17 +124,8 @@ const decision = decisionEngine.run({
   aiDirection: aiDecision.direction
 });
 
-  const review = await aiReviewEngine({
-    asset,
-    price,
-    technical,
-    macro,
-    geopolitics,
-    crossAsset,
-    preliminaryDecision: decision
-  });
 
-const finalDirection = review.finalDirection;
+const finalDirection = aiDecision.direction;
 
 if (finalDirection !== "NO_TRADE" && price) {
   const entry = price;
@@ -147,10 +150,7 @@ if (finalDirection !== "NO_TRADE" && price) {
     JSON.stringify(openTrades, null, 2)
   );
 }
-  const finalConfidence = Math.min(
-    decision.confidence,
-    review.finalConfidence
-  );
+const finalConfidence = decision.confidence;
 
   const thesisEngine = new ThesisEngine();
 
