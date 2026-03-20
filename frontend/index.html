@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Atlas Terminal</title>
+  <link rel="icon" href="data:,">
   <style>
     :root {
       --bg: #07111b;
@@ -912,9 +913,14 @@ Risk analysis will appear here once the model completes evaluation.
     </div>
   </div>
 <script>
+let deviceId = localStorage.getItem("device_id");
 
-const API = "https://atlas-terminal-api.onrender.com/analyze";
-const BACKTEST_API = "https://atlas-terminal-api.onrender.com/backtest";
+if (!deviceId) {
+  deviceId = crypto.randomUUID();
+  localStorage.setItem("device_id", deviceId);
+}
+const API = "https://atlas-terminal-api.onrender.com/api/analyze";
+const BACKTEST_API = "https://atlas-terminal-api.onrender.com/api/backtest";
 /* ASSET UNIVERSE */
 
 const ASSETS = {
@@ -993,7 +999,10 @@ let data;
 try {
   const res = await fetch(API, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+headers: {
+  "Content-Type": "application/json",
+  "x-device-id": deviceId
+},
     body: JSON.stringify({ asset })
   });
   data = await res.json();
