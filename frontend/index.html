@@ -923,13 +923,20 @@ const supabaseClient = supabase.createClient(
 
 let userId = null;
 
-async function getUser() {
-  const { data } = await supabaseClient.auth.getUser();
-  if (data?.user) {
-    userId = data.user.id;
+// CHECK SESSION ON PAGE LOAD
+window.addEventListener('load', async () => {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+
+  if (session?.user) {
+    userId = session.user.id;
+
+    console.log("LOGGED IN:", session.user.email);
+
+    document.getElementById("login-btn").innerText = "LOGGED";
+  } else {
+    console.log("NO SESSION");
   }
-}
-getUser();
+});
 async function login(email, password) {
 async function login(email, password) {
   const { data, error } = await supabaseClient.auth.signInWithPassword({
