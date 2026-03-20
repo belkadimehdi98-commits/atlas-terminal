@@ -606,6 +606,8 @@ margin-left:6px;
 
   <div class="action-stack">
     <button class="run-btn">Run Analysis</button>
+ <button id="login-btn" class="secondary-btn">Login</button>
+<button id="signup-btn" class="secondary-btn">Sign Up</button>
 
     <div class="backtest-row">
       <button class="secondary-btn backtest-btn">Backtest</button>
@@ -912,6 +914,51 @@ Risk analysis will appear here once the model completes evaluation.
              </div>
     </div>
   </div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const { createClient } = supabase;
+const supabase = createClient(
+  "https://xhfgxwiqpyfmrkatmnxy.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhoZmd4d2lxcHlmbXJrYXRtbnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDc1NjAsImV4cCI6MjA4OTU4MzU2MH0.Jf6qhzT4R-OTGw-8ZnUZjBSnP8bSpsJZLffM8qiHdJo"
+
+);
+let userId = null;
+
+async function getUser() {
+  const { data } = await supabase.auth.getUser();
+  if (data?.user) {
+    userId = data.user.id;
+  }
+}
+getUser();
+async function login(email, password) {
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  userId = data.user.id;
+  alert("Logged in");
+}
+
+async function signup(email, password) {
+  const { error } = await supabase.auth.signUp({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+  } else {
+    alert("Check your email");
+  }
+}
+</script>
 <script>
 let deviceId = localStorage.getItem("device_id");
 
@@ -1001,7 +1048,7 @@ try {
     method: "POST",
 headers: {
   "Content-Type": "application/json",
-  "x-device-id": deviceId
+  "x-device-id": userId || deviceId
 },
     body: JSON.stringify({ asset })
   });
@@ -1338,6 +1385,17 @@ console.error("Backtest failed");
 
 }
 document.querySelector(".run-btn").onclick = runAnalysis;
+document.getElementById("login-btn").onclick = () => {
+  const email = prompt("Email:");
+  const password = prompt("Password:");
+  login(email, password);
+};
+
+document.getElementById("signup-btn").onclick = () => {
+  const email = prompt("Email:");
+  const password = prompt("Password:");
+  signup(email, password);
+};
 document.querySelector(".backtest-btn").onclick = runBacktest;
 document.querySelector(".searchbox input")
   .addEventListener("keypress", function(e){

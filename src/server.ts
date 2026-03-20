@@ -47,8 +47,19 @@ if (!store[deviceId]) {
   store[deviceId] = { count: 0 };
 }
 
-const userId = req.headers["x-user-id"] || null;
+const authHeader = req.headers.authorization;
 
+let userId = null;
+
+if (authHeader) {
+  const token = authHeader.replace("Bearer ", "");
+
+  const { data, error } = await supabase.auth.getUser(token);
+
+  if (!error && data?.user) {
+    userId = data.user.id;
+  }
+}
 const maxFree = 3;
 const maxWithAccount = 5;
 
