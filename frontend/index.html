@@ -936,31 +936,40 @@ window.addEventListener('load', async () => {
   } else {
     console.log("NO SESSION");
   }
+
+  // ✅ ADD THIS PART HERE
+  const hash = window.location.hash;
+
+  if (hash && hash.includes("access_token")) {
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (data.session?.user) {
+      userId = data.session.user.id;
+
+      document.getElementById("login-btn").innerText = "LOGGED";
+
+      console.log("AUTO LOGIN SUCCESS");
+    }
+
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
 });
-async function login(email, password) {
 async function login(email, password) {
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email,
     password
   });
 
-  console.log("LOGIN RESULT:", { data, error });
-
   if (error) {
     alert(error.message);
     return;
   }
 
   userId = data.user.id;
-  alert("Logged in");
-}
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
+  document.getElementById("login-btn").innerText = "LOGGED";
 
-  userId = data.user.id;
   alert("Logged in");
 }
 
