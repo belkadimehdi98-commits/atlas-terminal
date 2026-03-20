@@ -916,23 +916,23 @@ Risk analysis will appear here once the model completes evaluation.
   </div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-const { createClient } = supabase;
-const supabase = createClient(
+const supabaseClient = supabase.createClient(
   "https://xhfgxwiqpyfmrkatmnxy.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhoZmd4d2lxcHlmbXJrYXRtbnh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwMDc1NjAsImV4cCI6MjA4OTU4MzU2MH0.Jf6qhzT4R-OTGw-8ZnUZjBSnP8bSpsJZLffM8qiHdJo"
-
 );
+
 let userId = null;
 
 async function getUser() {
-  const { data } = await supabase.auth.getUser();
+  const { data } = await supabaseClient.auth.getUser();
   if (data?.user) {
     userId = data.user.id;
   }
 }
 getUser();
 async function login(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
+const { data, error } = await supabaseClient.auth.signInWithPassword({
+console.log("LOGIN RESULT:", { data, error });
     email,
     password
   });
@@ -947,7 +947,7 @@ async function login(email, password) {
 }
 
 async function signup(email, password) {
-  const { error } = await supabase.auth.signUp({
+  const { error } = await supabaseClient.auth.signUp({
     email,
     password
   });
