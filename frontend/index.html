@@ -1420,10 +1420,35 @@ console.error("Backtest failed");
 
 }
 document.querySelector(".run-btn").onclick = runAnalysis;
-document.getElementById("login-btn").onclick = () => {
+document.getElementById("login-btn").onclick = async () => {
+
+  // LOGOUT FLOW
+  if (userId) {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    userId = null;
+
+    document.getElementById("login-btn").innerText = "Login";
+
+    // optional cleanup
+    localStorage.removeItem("guest_tries");
+
+    alert("Logged out");
+    return;
+  }
+
+  // LOGIN FLOW
   const email = prompt("Email:");
   const password = prompt("Password:");
-  login(email, password);
+
+  if (!email || !password) return;
+
+  await login(email, password);
 };
 
 document.getElementById("signup-btn").onclick = () => {
