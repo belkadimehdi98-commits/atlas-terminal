@@ -15,9 +15,9 @@
       --text: #edf3ff;
       --muted: #91a4c2;
       --muted-2: #6f82a1;
-      --buy: #00e58a;
-      --sell: #ff5463;
-      --neutral: #7f93b7;
+--buy: #22c55e;
+--sell: #ef4444;
+--neutral: #94a3b8;
       --accent: #5f8fff;
       --radius: 18px;
     }
@@ -43,12 +43,13 @@
       gap: 16px;
     }
 
-    .shell {
-      background: linear-gradient(180deg, rgba(12, 23, 36, 0.98), rgba(9, 18, 29, 0.98));
-      border: 1px solid var(--line);
-      border-radius: 22px;
-      overflow: hidden;
-    }
+.shell {
+  background: linear-gradient(180deg, #0c1a2b, #091625);
+  border: 1px solid rgba(138,165,204,0.18);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+}
 
     .topbar {
       padding: 16px 18px;
@@ -110,18 +111,35 @@
     .searchbox input::placeholder { color: var(--muted-2); }
 
 .run-btn,
-.quick-asset {
-  height: 54px;
-  border-radius: 14px;
-  border: 1px solid var(--line-strong);
-  background: #102033;
-  color: var(--text);
-  padding: 0 18px;
-  font-size: 13px;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  cursor: pointer;
+.secondary-btn{
+height:54px;
+min-width:150px;
+border-radius:14px;
+border:1px solid var(--line-strong);
+background:#102033;
+color:var(--text);
+padding:0 18px;
+font-size:13px;
+font-weight:800;
+text-transform:uppercase;
+letter-spacing:0.08em;
+cursor:pointer;
+transition: all 0.2s ease;
+}
+
+.secondary-btn:hover{
+background: linear-gradient(135deg, #3b82f6, #2563eb);
+border: 1px solid rgba(95,143,255,0.6);
+box-shadow: 0 6px 18px rgba(59,130,246,0.25);
+}
+.run-btn{
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  border: 1px solid rgba(95, 143, 255, 0.6);
+  box-shadow: 0 6px 18px rgba(59,130,246,0.25);
+}
+
+.run-btn:hover{
+  background: linear-gradient(135deg, #4f8fff, #2f6fff);
 }
 
  .run-btn { min-width: 150px; }
@@ -147,18 +165,19 @@ cursor:pointer;
 }
 
 .backtest-row{
-display:flex;
-align-items:center;
-gap:12px;
-margin-left:10px;
+  display:flex;
+  align-items:center;
+  gap:10px;
 }
 
 .backtest-inline{
-font-size:13px;
-color:#edf3ff;
-font-weight:800;
-letter-spacing:.05em;
-margin-left:6px;
+  display:flex;
+  gap:14px;
+  align-items:center;
+  font-size:13px;
+  color:#edf3ff;
+  font-weight:800;
+  letter-spacing:.05em;
 }
     .quick-assets {
       display: flex;
@@ -268,12 +287,13 @@ margin-left:6px;
   display:grid;
   gap:16px;
 }
-    .decision-panel,
-    .analysis-panel {
-      background: linear-gradient(180deg, rgba(11, 22, 36, 0.96), rgba(8, 17, 27, 0.98));
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-    }
+.decision-panel,
+.analysis-panel {
+  background: linear-gradient(180deg, #0e1f33, #0a1828);
+  border: 1px solid rgba(138,165,204,0.18);
+  border-radius: var(--radius);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+}
 
     .decision-panel {
       padding: 22px;
@@ -346,9 +366,19 @@ margin-left:6px;
   letter-spacing: 0.04em;
 }
 
-    .buy { color: var(--buy); }
-    .sell { color: var(--sell); }
-    .neutral { color: var(--neutral); }
+.buy {
+  color: var(--buy);
+  text-shadow: 0 0 12px rgba(34,197,94,0.35);
+}
+
+.sell {
+  color: var(--sell);
+  text-shadow: 0 0 12px rgba(239,68,68,0.35);
+}
+
+.neutral {
+  color: var(--neutral);
+}
 
     .confidence {
       font-size: 18px;
@@ -585,20 +615,179 @@ margin-left:6px;
       .decision-value { font-size: 48px; }
       .level-value { font-size: 24px; }
     }
-  </style>
+.account-dropdown{
+  position:relative;
+}
+
+.dropdown-menu{
+  position:absolute;
+  top:110%;
+  right:0;
+  display:none;
+  flex-direction:column;
+  padding:6px;
+  min-width:160px;
+
+  background:#0a1522;
+  border:1px solid rgba(138,165,204,0.12);
+  border-radius:10px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.35);
+}
+.dropdown-menu.show{
+  display:flex;
+}
+
+.dropdown-menu button{
+  height:36px;
+  border-radius:8px;
+  background:transparent;
+  border:none;
+  color:#cfe1ff;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.05em;
+  text-align:left;
+  padding:0 10px;
+}
+
+.dropdown-menu button:hover{
+  background:#102033;
+}
+
+/* FORCE same hover behavior for google */
+.dropdown-menu .google-btn:hover{
+  background:#102033 !important;
+}
+.topbar{
+  padding:20px 24px;
+}
+
+.searchbar{
+  display:flex;
+  align-items:center;
+  gap:16px;
+  margin-top:16px;
+  grid-column: 1 / -1;
+}
+
+.workspace{
+  margin-top:12px;
+}
+.searchbox{
+  flex:1;
+  min-width:0;
+}
+
+.action-stack{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.backtest-row{
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.backtest-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-left:auto;
+}
+.searchbox{
+  flex: 0 1 520px;   /* was full width → now controlled */
+}
+.action-stack{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-left:0;     /* reset */
+}
+
+.backtest-row{
+  margin-left:6px; /* tiny separation */
+}
+.google-btn{
+  width:100%;
+  height:36px;
+
+  display:block;              /* 🔥 important */
+  text-align:left;
+
+  border-radius:8px;
+  border:none;
+  background:transparent;
+  color:#cfe1ff;
+
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.05em;
+
+  padding:0 10px;
+  cursor:pointer;
+
+  white-space:nowrap;
+}
+
+.google-btn:hover{
+  background:#102033;
+}
+.panel-title {
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  color: #7fa6ff;
+  text-transform: uppercase;
+  font-weight: 900;
+}
+
+.analysis-text {
+  font-size: 16px;      /* was 15 → more readable */
+  line-height: 1.75;    /* more breathing */
+  color: #e6f0ff;       /* cleaner white */
+  max-width: 540px;     /* pro reading width */
+}
+.ai-block {
+  display: grid;
+  gap: 18px;
+  margin-top: 12px;
+}
+
+.ai-section {
+  padding: 18px 20px;
+  border: 1px solid rgba(138,165,204,0.18);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #0c1a2b, #091625);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+}
+</style>
+
+
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
   <div class="app">
     <div class="shell">
-      <div class="topbar">
-        <div class="brand">
-          <div class="brand-kicker">Institutional AI Terminal</div>
-          <div class="brand-title">Atlas Terminal</div>
-        </div>
+<div class="topbar">
+
+  <div class="brand">
+    <div class="brand-kicker">Institutional AI Terminal</div>
+    <div class="brand-title">Atlas Terminal</div>
+  </div>
+
+  <div></div>
+
+  <div class="account-dropdown">
+    <button id="account-btn" class="secondary-btn">Account ⌄</button>
+
+    <div id="account-menu" class="dropdown-menu">
+      <button id="login-btn" class="secondary-btn">Login</button>
+      <button id="signup-btn" class="secondary-btn">Sign Up</button>
+      <button id="google-btn" class="google-btn">Continue with Google</button>
+    </div>
+  </div>
 
 <div class="searchbar">
-
   <div class="searchbox">
     <span style="color:#6f82a1;">⌕</span>
     <input type="text" placeholder="BTC, GOLD, EURUSD, OIL" />
@@ -606,25 +795,19 @@ margin-left:6px;
 
   <div class="action-stack">
     <button class="run-btn">Run Analysis</button>
- <button id="login-btn" class="secondary-btn">Login</button>
-<button id="signup-btn" class="secondary-btn">Sign Up</button>
-<button id="google-btn" class="secondary-btn">Google</button>
 
     <div class="backtest-row">
       <button class="secondary-btn backtest-btn">Backtest</button>
 
-<div id="backtest-results" class="backtest-inline">
+      <div id="backtest-results" class="backtest-inline">
         Trades <span id="bt-trades">-</span> |
         Win <span id="bt-winrate">-</span> |
         Profit <span id="bt-profit">-</span>
       </div>
     </div>
-
   </div>
-
 </div>
-
-      </div>
+</div>
 <div class="asset-nav">
   <div class="asset-tabs">
     <button class="asset-tab active" data-tab="crypto">Crypto</button>
@@ -777,24 +960,27 @@ Select an asset to load market data
 
 </div>
 
-<div class="divider"></div>
-<div class="divider"></div>
-<div class="panel-title">AI Strategic Analysis</div>
+<div class="ai-block">
 
-<div class="analysis-text" id="analysis-main">
-Awaiting analysis. The system will evaluate technical structure, macro regime, cross-asset flows, and geopolitical signals.
+  <div class="ai-section">
+    <div class="panel-title">AI Strategic Analysis</div>
+    <div class="analysis-text" id="analysis-main">
+      Awaiting analysis. The system will evaluate technical structure, macro regime, cross-asset flows, and geopolitical signals.
+    </div>
+  </div>
+
+  <div class="ai-section">
+    <div class="panel-title">Risk Assessment</div>
+    <div class="analysis-text" id="analysis-risk">
+      Risk analysis will appear here once the model completes evaluation.
+    </div>
+  </div>
+
+</div>        
+
+</aside>
+
 </div>
-
-<div class="divider"></div>
-
-<div class="panel-title">Risk Assessment</div>
-
-<div class="analysis-text" id="analysis-risk">
-Risk analysis will appear here once the model completes evaluation.
-</div>        </aside>
-
-</div>
-
         <section class="decision-panel">
           <div class="decision-header">
             <div class="asset-meta">
@@ -861,8 +1047,15 @@ Risk analysis will appear here once the model completes evaluation.
     </div>
 <div class="stat data-box">
 
-<div class="stat-k">Data Infrastructure</div>
-
+<div class="stat-k" style="
+  font-size:12px;
+  letter-spacing:0.18em;
+  color:#7fa6ff;
+  font-weight:900;
+  white-space:nowrap;
+">
+  DATA INFRASTRUCTURE
+</div>
 <div class="infra-list">
 
 <div class="infra-row">
@@ -900,8 +1093,14 @@ Risk analysis will appear here once the model completes evaluation.
 <div class="infra-value" id="src-update">—</div>
 </div>
 <div class="stat">
-  <div class="stat-k">Track Record</div>
-  <div class="stat-v" id="track-record">
+<div class="stat-k" style="
+  font-size:12px;
+  letter-spacing:0.18em;
+  color:#7fa6ff;
+  font-weight:900;
+">
+  TRACK RECORD
+</div>  <div class="stat-v" id="track-record">
     Trades - | Win - | PnL -
   </div>
 </div>
@@ -929,36 +1128,57 @@ let lastUserTryAt = localStorage.getItem("last_user_try_at") || null;
 
 // CHECK SESSION ON PAGE LOAD
 window.addEventListener('load', async () => {
+
+  // 1. Get session
   const { data: { session } } = await supabaseClient.auth.getSession();
 
   if (session?.user) {
     userId = session.user.id;
-
-    console.log("LOGGED IN:", session.user.email);
-
     document.getElementById("login-btn").innerText = "LOGGED";
-  } else {
-    console.log("NO SESSION");
+
+    if (!localStorage.getItem("user_initialized")) {
+      localStorage.setItem("user_initialized", "true");
+      localStorage.setItem("user_tries", "0");
+      localStorage.setItem("last_user_try_at", "0");
+    }
   }
 
-  // ✅ ADD THIS PART HERE
-  const hash = window.location.hash;
+  // 2. Handle Google redirect
+  if (window.location.hash.includes("access_token")) {
 
-  if (hash && hash.includes("access_token")) {
     const { data } = await supabaseClient.auth.getSession();
 
     if (data.session?.user) {
       userId = data.session.user.id;
-
       document.getElementById("login-btn").innerText = "LOGGED";
 
-      console.log("AUTO LOGIN SUCCESS");
+      if (!localStorage.getItem("user_initialized")) {
+        localStorage.setItem("user_initialized", "true");
+        localStorage.setItem("user_tries", "0");
+        localStorage.setItem("last_user_try_at", "0");
+      }
     }
 
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 
+  // 3. Listen to auth changes (Google critical)
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (session?.user) {
+      userId = session.user.id;
+      document.getElementById("login-btn").innerText = "LOGGED";
+
+      if (!localStorage.getItem("user_initialized")) {
+        localStorage.setItem("user_initialized", "true");
+        localStorage.setItem("user_tries", "0");
+        localStorage.setItem("last_user_try_at", "0");
+      }
+    }
+  });
+
 });
+
+
 async function login(email, password) {
   const { data, error } = await supabaseClient.auth.signInWithPassword({
     email,
@@ -1636,6 +1856,85 @@ document.getElementById("chart-placeholder").style.display = "none";
 
 }
 loadCandles("BTC");
-</script>
+
+/* ACCOUNT DROPDOWN */
+const accountBtn = document.getElementById("account-btn");
+const accountMenu = document.getElementById("account-menu");
+
+accountBtn.onclick = (e) => {
+  e.stopPropagation();
+  accountMenu.classList.toggle("show");
+};
+
+document.addEventListener("click", () => {
+  accountMenu.classList.remove("show");
+});</script>
+<div style="
+  margin-top:50px;
+  padding:20px 24px;
+  border-top:1px solid rgba(138,165,204,0.18);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font-size:12px;
+  color:#91a4c2;
+">
+
+  <!-- LEFT -->
+  <div style="
+    font-weight:700;
+    letter-spacing:0.06em;
+    color:#bcd2ff;
+  ">
+    © 2026 ATLAS TERMINAL
+  </div>
+
+  <!-- CENTER LINKS -->
+  <div style="
+    display:flex;
+    gap:28px;
+    justify-content:center;
+    flex:1;
+  ">
+
+    <a href="terms.html" style="
+      text-decoration:none;
+      font-weight:800;
+      letter-spacing:0.12em;
+      color:#bcd2ff;
+      transition:all .15s ease;
+    "
+    onmouseover="this.style.color='#ffffff'"
+    onmouseout="this.style.color='#bcd2ff'">
+      TERMS
+    </a>
+
+    <a href="privacy.html" style="
+      text-decoration:none;
+      font-weight:800;
+      letter-spacing:0.12em;
+      color:#bcd2ff;
+      transition:all .15s ease;
+    "
+    onmouseover="this.style.color='#ffffff'"
+    onmouseout="this.style.color='#bcd2ff'">
+      PRIVACY
+    </a>
+
+    <a href="contact.html" style="
+      text-decoration:none;
+      font-weight:800;
+      letter-spacing:0.12em;
+      color:#bcd2ff;
+      transition:all .15s ease;
+    "
+    onmouseover="this.style.color='#ffffff'"
+    onmouseout="this.style.color='#bcd2ff'">
+      CONTACT
+    </a>
+
+  </div>
+
+</div>
 </body>
 </html>
