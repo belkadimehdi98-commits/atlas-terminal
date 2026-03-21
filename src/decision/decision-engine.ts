@@ -40,8 +40,7 @@ export class DecisionEngine {
 
   run(input: DecisionInput): DecisionResult {
 
-    const { technical, macro, crossAsset, geopolitics, price } = input;
-
+const { technical, macro, crossAsset, geopolitics, price, aiDirection } = input;
     let score = 0;
 let technicalScore = 0;
 let macroScore = 0;
@@ -136,8 +135,7 @@ for (const ind of technical.indicators) {
     =============================== */
 
 let direction: TradeDirection = input.aiDirection;
-    if (score >= 40) direction = "BUY";
-    if (score <= -40) direction = "SELL";
+
 
 let confidence = Math.min(Math.abs(score), 90);
 

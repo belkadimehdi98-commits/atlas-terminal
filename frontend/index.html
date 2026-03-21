@@ -1186,7 +1186,7 @@ async function login(email, password) {
   });
 
   if (error) {
-    alert(error.message);
+showToast(error.message, "error");
     return;
   }
 
@@ -1194,7 +1194,7 @@ async function login(email, password) {
 
   document.getElementById("login-btn").innerText = "LOGGED";
 
-  alert("Logged in");
+  showToast("Login successful", "success");
 }
 
 async function signup(email, password) {
@@ -1204,9 +1204,9 @@ async function signup(email, password) {
   });
 
   if (error) {
-    alert(error.message);
+    showToast(error.message, "error");
   } else {
-    alert("Check your email");
+    showToast("Verification email sent", "success");
   }
 }
 </script>
@@ -1249,7 +1249,7 @@ const now = Date.now();
 if (!userId) {
   // Guest: 3 free tries total
   if (guestTries >= 3) {
-    alert("Free limit reached. Please sign up.");
+    showToast("Free limit reached. Please sign up.", "error");
     return;
   }
   guestTries++;
@@ -1266,7 +1266,7 @@ if (!userId) {
   } else {
     // After → 1 per 24h
     if (now - last < 24 * 60 * 60 * 1000) {
-      alert("Daily limit reached. Come back tomorrow.");
+showToast("Daily limit reached. Upgrade to Pro for unlimited analysis.", "error");
       return;
     }
     // allow 1 try, reset last_user_try_at
@@ -1292,7 +1292,7 @@ const asset = document.querySelector(".searchbox input").value.trim().toUpperCas
 const allAssets = [...ASSETS.crypto, ...ASSETS.forex, ...ASSETS.indices, ...ASSETS.commodities, ...ASSETS.stocks];
 
 if(!asset){
-  alert("Enter an asset or select one from the asset panel.");
+showToast("Enter an asset or select one from the asset panel.", "error");
   btn.innerText = "Run Analysis";
   btn.disabled = false;
   return;
@@ -1628,7 +1628,7 @@ async function runBacktest(){
                 .value.trim().toUpperCase();
 
   if(!asset){
-    alert("Enter an asset first");
+    showToast("Select an asset to run backtest.", "error");
     return;
   }
 
@@ -1672,7 +1672,7 @@ document.getElementById("login-btn").onclick = async () => {
     const { error } = await supabaseClient.auth.signOut();
 
     if (error) {
-      alert(error.message);
+      showToast(error.message, "error");
       return;
     }
 
@@ -1683,23 +1683,16 @@ document.getElementById("login-btn").onclick = async () => {
     // optional cleanup
     localStorage.removeItem("guest_tries");
 
-    alert("Logged out");
+    showToast("Logged out", "success");
     return;
   }
 
-  // LOGIN FLOW
-  const email = prompt("Email:");
-  const password = prompt("Password:");
-
-  if (!email || !password) return;
-
-  await login(email, password);
+// LOGIN FLOW → OPEN MODAL
+document.getElementById("login-modal").style.display = "flex";
 };
 
 document.getElementById("signup-btn").onclick = () => {
-  const email = prompt("Email:");
-  const password = prompt("Password:");
-  signup(email, password);
+  showToast("Create account using Google or login modal", "error");
 };
 document.getElementById("google-btn").onclick = async () => {
   await supabaseClient.auth.signInWithOAuth({
@@ -1868,7 +1861,23 @@ accountBtn.onclick = (e) => {
 
 document.addEventListener("click", () => {
   accountMenu.classList.remove("show");
-});</script>
+});
+
+document.getElementById("login-submit").onclick = async () => {
+
+  const email = document.getElementById("login-email").value.trim();
+  const password = document.getElementById("login-password").value.trim();
+
+  if (!email || !password) {
+    showToast("Enter email and password", "error");
+    return;
+  }
+
+  await login(email, password);
+
+  document.getElementById("login-modal").style.display = "none";
+};
+</script>
 <div style="
   margin-top:50px;
   padding:20px 24px;
@@ -1935,6 +1944,126 @@ document.addEventListener("click", () => {
 
   </div>
 
+</div>
+<div id="toast-container" style="
+  position:fixed;
+  top:20px;
+  right:20px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:9999;
+"></div>
+
+<style>
+.toast{
+  min-width:260px;
+  padding:14px 16px;
+  border-radius:12px;
+  border:1px solid rgba(138,165,204,0.18);
+  background:linear-gradient(180deg,#0c1a2b,#091625);
+  color:#edf3ff;
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:0.04em;
+  box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  opacity:0;
+  transform:translateY(-10px);
+  transition:all .25s ease;
+}
+
+.toast.success{
+  border-color:rgba(34,197,94,0.4);
+  box-shadow:0 6px 20px rgba(34,197,94,0.15);
+}
+
+.toast.error{
+  border-color:rgba(239,68,68,0.4);
+  box-shadow:0 6px 20px rgba(239,68,68,0.15);
+}
+
+.toast.show{
+  opacity:1;
+  transform:translateY(0);
+}
+</style>
+
+<script>
+function showToast(message, type="success"){
+  const container = document.getElementById("toast-container");
+
+  const toast = document.createElement("div");
+  toast.className = "toast " + type;
+  toast.innerText = message;
+
+  container.appendChild(toast);
+
+  setTimeout(()=> toast.classList.add("show"), 10);
+
+  setTimeout(()=>{
+    toast.classList.remove("show");
+    setTimeout(()=> toast.remove(), 250);
+  }, 3000);
+}
+</script>
+<div id="login-modal" style="
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(6px);
+  z-index:9999;
+">
+
+  <div style="
+    width:340px;
+    padding:24px;
+    border-radius:18px;
+    background:linear-gradient(180deg,#0c1a2b,#091625);
+    border:1px solid rgba(138,165,204,0.18);
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    display:grid;
+    gap:16px;
+  ">
+
+    <div style="
+      font-size:14px;
+      letter-spacing:0.14em;
+      text-transform:uppercase;
+      font-weight:900;
+      color:#7fa6ff;
+    ">
+      Login
+    </div>
+
+    <input id="login-email" placeholder="Email" style="
+      height:42px;
+      border-radius:10px;
+      border:1px solid rgba(138,165,204,0.18);
+      background:#0b1624;
+      color:#edf3ff;
+      padding:0 12px;
+      outline:none;
+    ">
+
+    <input id="login-password" type="password" placeholder="Password" style="
+      height:42px;
+      border-radius:10px;
+      border:1px solid rgba(138,165,204,0.18);
+      background:#0b1624;
+      color:#edf3ff;
+      padding:0 12px;
+      outline:none;
+    ">
+
+    <div style="display:flex; gap:10px;">
+      <button id="login-submit" class="run-btn" style="flex:1;">Login</button>
+      <button id="login-close" class="secondary-btn" style="flex:1;">Cancel</button>
+    </div>
+
+  </div>
 </div>
 </body>
 </html>
