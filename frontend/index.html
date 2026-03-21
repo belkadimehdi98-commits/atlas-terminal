@@ -1185,16 +1185,17 @@ async function login(email, password) {
     password
   });
 
-  if (error) {
-showToast(error.message, "error");
-    return;
-  }
+if (error) {
+  showToast("Invalid email or password.", "error");
+  return false;
+}
 
   userId = data.user.id;
 
   document.getElementById("login-btn").innerText = "LOGGED";
 
   showToast("Login successful", "success");
+return true;
 }
 
 async function signup(email, password) {
@@ -1863,20 +1864,53 @@ document.addEventListener("click", () => {
   accountMenu.classList.remove("show");
 });
 
-document.getElementById("login-submit").onclick = async () => {
+window.addEventListener("load", () => {
 
-  const email = document.getElementById("login-email").value.trim();
-  const password = document.getElementById("login-password").value.trim();
+  const submitBtn = document.getElementById("login-submit");
+  const closeBtn = document.getElementById("login-close");
 
-  if (!email || !password) {
-    showToast("Enter email and password", "error");
-    return;
+  const passwordInput = document.getElementById("login-password");
+  const toggle = document.getElementById("toggle-password");
+
+  if (submitBtn) {
+    submitBtn.onclick = async () => {
+
+      const email = document.getElementById("login-email").value.trim();
+      const password = passwordInput.value.trim();
+
+      if (!email || !password) {
+        showToast("Email and password are required.", "error");
+        return;
+      }
+
+const success = await login(email, password);
+
+if (success) {
+  document.getElementById("login-modal").style.display = "none";
+}
+    };
   }
 
-  await login(email, password);
+  if (closeBtn) {
+    closeBtn.onclick = () => {
+      document.getElementById("login-modal").style.display = "none";
+    };
+  }
 
-  document.getElementById("login-modal").style.display = "none";
-};
+  // 👁 PASSWORD TOGGLE
+  if (toggle && passwordInput) {
+    toggle.onclick = () => {
+      if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggle.innerText = "Hide";
+      } else {
+        passwordInput.type = "password";
+        toggle.innerText = "Show";
+      }
+    };
+  }
+
+});
 </script>
 <div style="
   margin-top:50px;
@@ -1952,21 +1986,27 @@ document.getElementById("login-submit").onclick = async () => {
   display:flex;
   flex-direction:column;
   gap:10px;
-  z-index:9999;
+  z-index:10000;
 "></div>
 
 <style>
 .toast{
-  min-width:260px;
-  padding:14px 16px;
-  border-radius:12px;
+  min-width:280px;
+  max-width:340px;
+
+  padding:16px 18px;
+  border-radius:14px;
+
   border:1px solid rgba(138,165,204,0.18);
-  background:linear-gradient(180deg,#0c1a2b,#091625);
-  color:#edf3ff;
+  background:linear-gradient(180deg,#0e1f33,#0a1828);
+
+  color:#e6f0ff;
   font-size:13px;
   font-weight:700;
-  letter-spacing:0.04em;
-  box-shadow:0 8px 30px rgba(0,0,0,0.4);
+  letter-spacing:0.05em;
+
+  box-shadow:0 12px 40px rgba(0,0,0,0.45);
+
   opacity:0;
   transform:translateY(-10px);
   transition:all .25s ease;
@@ -1974,17 +2014,25 @@ document.getElementById("login-submit").onclick = async () => {
 
 .toast.success{
   border-color:rgba(34,197,94,0.4);
-  box-shadow:0 6px 20px rgba(34,197,94,0.15);
 }
 
 .toast.error{
-  border-color:rgba(239,68,68,0.4);
-  box-shadow:0 6px 20px rgba(239,68,68,0.15);
+  border-color:rgba(239,68,68,0.5);
 }
-
 .toast.show{
   opacity:1;
   transform:translateY(0);
+}
+/* 🔥 CENTER TOP instead of far right */
+#toast-container{
+  position:fixed;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+  z-index:10000;
 }
 </style>
 
@@ -2048,15 +2096,36 @@ function showToast(message, type="success"){
       outline:none;
     ">
 
-    <input id="login-password" type="password" placeholder="Password" style="
-      height:42px;
-      border-radius:10px;
-      border:1px solid rgba(138,165,204,0.18);
-      background:#0b1624;
-      color:#edf3ff;
-      padding:0 12px;
-      outline:none;
-    ">
+<div style="position:relative;">
+  <input id="login-password" type="password" placeholder="Password" style="
+    width:100%;
+    height:42px;
+    border-radius:10px;
+    border:1px solid rgba(138,165,204,0.18);
+    background:#0b1624;
+    color:#edf3ff;
+    padding:0 38px 0 12px;
+    outline:none;
+  ">
+<button type="button" id="toggle-password" style="
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:28px;
+  height:28px;
+  border:none;
+  background:transparent;
+  color:#91a4c2;
+  cursor:pointer;
+  font-size:13px;
+  font-weight:700;
+  padding:0;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+">Show</button>
+</div>
 
     <div style="display:flex; gap:10px;">
 <button type="button" id="login-submit" class="run-btn" style="flex:1;">Login</button>
