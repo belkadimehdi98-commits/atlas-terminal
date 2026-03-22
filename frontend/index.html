@@ -1125,7 +1125,24 @@ let userId = null;
 let guestTries = parseInt(localStorage.getItem("guest_tries") || "0");
 let userTries = parseInt(localStorage.getItem("user_tries") || "0");
 let lastUserTryAt = localStorage.getItem("last_user_try_at") || null;
+function updateAccountUI(user) {
+  const menu = document.getElementById("account-menu");
 
+  if (!user) {
+    menu.innerHTML = `
+      <button id="login-btn" class="secondary-btn">Login</button>
+      <button id="signup-btn" class="secondary-btn">Sign Up</button>
+      <button id="google-btn" class="google-btn">Continue with Google</button>
+    `;
+  } else {
+    menu.innerHTML = `
+      <div style="padding:8px 10px;font-size:12px;color:#91a4c2;">
+        ${user.email}
+      </div>
+      <button id="logout-btn" class="secondary-btn">Logout</button>
+    `;
+  }
+}
 // CHECK SESSION ON PAGE LOAD
 window.addEventListener('load', async () => {
 
@@ -1134,7 +1151,7 @@ window.addEventListener('load', async () => {
 
   if (session?.user) {
     userId = session.user.id;
-    document.getElementById("login-btn").innerText = "LOGGED";
+    updateAccountUI(session.user);
 
     if (!localStorage.getItem("user_initialized")) {
       localStorage.setItem("user_initialized", "true");
@@ -1150,7 +1167,7 @@ window.addEventListener('load', async () => {
 
     if (data.session?.user) {
       userId = data.session.user.id;
-      document.getElementById("login-btn").innerText = "LOGGED";
+      updateAccountUI(data.session.user);
 
       if (!localStorage.getItem("user_initialized")) {
         localStorage.setItem("user_initialized", "true");
@@ -1163,10 +1180,11 @@ window.addEventListener('load', async () => {
   }
 
   // 3. Listen to auth changes (Google critical)
+  
   supabaseClient.auth.onAuthStateChange((event, session) => {
     if (session?.user) {
       userId = session.user.id;
-      document.getElementById("login-btn").innerText = "LOGGED";
+      updateAccountUI(session.user);
 
       if (!localStorage.getItem("user_initialized")) {
         localStorage.setItem("user_initialized", "true");
