@@ -1695,43 +1695,6 @@ console.error("Backtest failed");
 
 }
 document.querySelector(".run-btn").onclick = runAnalysis;
-document.getElementById("login-btn").onclick = async () => {
-
-  // LOGOUT FLOW
-  if (userId) {
-    const { error } = await supabaseClient.auth.signOut();
-
-    if (error) {
-      showToast(error.message, "error");
-      return;
-    }
-
-    userId = null;
-
-    document.getElementById("login-btn").innerText = "Login";
-
-    // optional cleanup
-    localStorage.removeItem("guest_tries");
-
-    showToast("Logged out", "success");
-    return;
-  }
-
-// LOGIN FLOW → OPEN MODAL
-document.getElementById("login-modal").style.display = "flex";
-};
-
-document.getElementById("signup-btn").onclick = () => {
-  showToast("Create account using Google or login modal", "error");
-};
-document.getElementById("google-btn").onclick = async () => {
-  await supabaseClient.auth.signInWithOAuth({
-    provider: "google",
-    options: {
-      redirectTo: window.location.origin
-    }
-  });
-};
 document.querySelector(".backtest-btn").onclick = runBacktest;
 document.querySelector(".searchbox input")
   .addEventListener("keypress", function(e){
