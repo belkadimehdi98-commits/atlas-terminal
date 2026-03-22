@@ -1143,6 +1143,17 @@ function updateAccountUI(user) {
     `;
   }
 }
+
+// 👇 ADD HERE (immediately after closing bracket)
+document.addEventListener("click", async (e) => {
+  if (e.target.id === "logout-btn") {
+    await supabaseClient.auth.signOut();
+    userId = null;
+    updateAccountUI(null);
+    showToast("Logged out", "success");
+  }
+});
+
 // CHECK SESSION ON PAGE LOAD
 window.addEventListener('load', async () => {
 
