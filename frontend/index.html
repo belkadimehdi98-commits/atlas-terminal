@@ -1125,34 +1125,6 @@ let userId = null;
 let guestTries = parseInt(localStorage.getItem("guest_tries") || "0");
 let userTries = parseInt(localStorage.getItem("user_tries") || "0");
 let lastUserTryAt = localStorage.getItem("last_user_try_at") || null;
-function updateAccountUI(user) {
-  const menu = document.getElementById("account-menu");
-
-  if (!user) {
-    menu.innerHTML = `
-      <button id="login-btn" class="secondary-btn">Login</button>
-      <button id="signup-btn" class="secondary-btn">Sign Up</button>
-      <button id="google-btn" class="google-btn">Continue with Google</button>
-    `;
-  } else {
-    menu.innerHTML = `
-      <div style="padding:8px 10px;font-size:12px;color:#91a4c2;">
-        ${user.email}
-      </div>
-      <button id="logout-btn" class="secondary-btn">Logout</button>
-    `;
-  }
-}
-
-// 👇 ADD HERE (immediately after closing bracket)
-document.addEventListener("click", async (e) => {
-  if (e.target.id === "logout-btn") {
-    await supabaseClient.auth.signOut();
-    userId = null;
-    updateAccountUI(null);
-    showToast("Logged out", "success");
-  }
-});
 
 // CHECK SESSION ON PAGE LOAD
 window.addEventListener('load', async () => {
@@ -1162,7 +1134,7 @@ window.addEventListener('load', async () => {
 
   if (session?.user) {
     userId = session.user.id;
-    updateAccountUI(session.user);
+    document.getElementById("login-btn").innerText = "LOGGED";
 
     if (!localStorage.getItem("user_initialized")) {
       localStorage.setItem("user_initialized", "true");
@@ -1178,7 +1150,7 @@ window.addEventListener('load', async () => {
 
     if (data.session?.user) {
       userId = data.session.user.id;
-      updateAccountUI(data.session.user);
+      document.getElementById("login-btn").innerText = "LOGGED";
 
       if (!localStorage.getItem("user_initialized")) {
         localStorage.setItem("user_initialized", "true");
@@ -1191,11 +1163,10 @@ window.addEventListener('load', async () => {
   }
 
   // 3. Listen to auth changes (Google critical)
-  
   supabaseClient.auth.onAuthStateChange((event, session) => {
     if (session?.user) {
       userId = session.user.id;
-      updateAccountUI(session.user);
+      document.getElementById("login-btn").innerText = "LOGGED";
 
       if (!localStorage.getItem("user_initialized")) {
         localStorage.setItem("user_initialized", "true");
@@ -1695,6 +1666,43 @@ console.error("Backtest failed");
 
 }
 document.querySelector(".run-btn").onclick = runAnalysis;
+document.getElementById("login-btn").onclick = async () => {
+
+  // LOGOUT FLOW
+  if (userId) {
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+      showToast(error.message, "error");
+      return;
+    }
+
+    userId = null;
+
+    document.getElementById("login-btn").innerText = "Login";
+
+    // optional cleanup
+    localStorage.removeItem("guest_tries");
+
+    showToast("Logged out", "success");
+    return;
+  }
+
+// LOGIN FLOW → OPEN MODAL
+document.getElementById("login-modal").style.display = "flex";
+};
+
+document.getElementById("signup-btn").onclick = () => {
+  showToast("Create account using Google or login modal", "error");
+};
+document.getElementById("google-btn").onclick = async () => {
+  await supabaseClient.auth.signInWithOAuth({
+    provider: "google",
+    options: {
+      redirectTo: window.location.origin
+    }
+  });
+};
 document.querySelector(".backtest-btn").onclick = runBacktest;
 document.querySelector(".searchbox input")
   .addEventListener("keypress", function(e){
