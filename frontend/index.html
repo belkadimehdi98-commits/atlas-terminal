@@ -776,7 +776,13 @@ cursor:pointer;
   </div>
 
   <div></div>
-
+<div id="user-email" style="
+  font-size:12px;
+  color:#91a4c2;
+  font-weight:700;
+  letter-spacing:0.04em;
+  text-align:right;
+"></div>
   <div class="account-dropdown">
     <button id="account-btn" class="secondary-btn">Account ⌄</button>
 
@@ -1135,6 +1141,7 @@ window.addEventListener('load', async () => {
   if (session?.user) {
     userId = session.user.id;
     document.getElementById("login-btn").innerText = "LOGGED";
+    document.getElementById("user-email").innerText = session.user.email;
 
     if (!localStorage.getItem("user_initialized")) {
       localStorage.setItem("user_initialized", "true");
@@ -1151,6 +1158,7 @@ window.addEventListener('load', async () => {
     if (data.session?.user) {
       userId = data.session.user.id;
       document.getElementById("login-btn").innerText = "LOGGED";
+      document.getElementById("user-email").innerText = data.session.user.email;
 
       if (!localStorage.getItem("user_initialized")) {
         localStorage.setItem("user_initialized", "true");
@@ -1167,6 +1175,7 @@ window.addEventListener('load', async () => {
     if (session?.user) {
       userId = session.user.id;
       document.getElementById("login-btn").innerText = "LOGGED";
+      document.getElementById("user-email").innerText = session.user.email;
 
       if (!localStorage.getItem("user_initialized")) {
         localStorage.setItem("user_initialized", "true");
@@ -1680,6 +1689,7 @@ document.getElementById("login-btn").onclick = async () => {
     userId = null;
 
     document.getElementById("login-btn").innerText = "Login";
+    document.getElementById("user-email").innerText = "";
 
     // optional cleanup
     localStorage.removeItem("guest_tries");
