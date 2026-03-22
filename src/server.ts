@@ -26,7 +26,11 @@ import { runLiquidationEngine } from "./intelligence/liquidation-engine";
 import { runOptionsIntelligence } from "./intelligence/options-intelligence-engine";
 import { analyzeWeatherShock } from "./intelligence/weather-shock-engine";
 import { createClient } from "@supabase/supabase-js";
+import Stripe from "stripe";
 
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+  apiVersion: "2024-06-20"
+});
 const supabase = createClient(
   process.env.SUPABASE_URL!,
   process.env.SUPABASE_SERVICE_ROLE_KEY!
@@ -382,7 +386,27 @@ app.get("/track-record", (req, res) => {
 });
 
 const PORT = Number(process.env.PORT) || 3000;
+app.post("/create-checkout-session", async (req, res) => {
+  try {
+    const session = await stripe.checkout.sessions.create({
+      mode: "subscription",
+      line_items: [
+        {
+          price: process.env.STRIPE_PRICE_ID!,
+          quantity: 1
+        }
+      ],
+success_url: "https://atlasterminal.pro?success=true",
+cancel_url: "https://atlasterminal.pro?canceled=true"
+    });
 
+    res.json({ id: session.id });
+
+  } catch (err) {
+    console.error("Stripe error:", err);
+    res.status(500).json({ error: "stripe_failed" });
+  }
+});
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`Atlas API running on port ${PORT}`);
 });

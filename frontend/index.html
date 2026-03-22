@@ -773,10 +773,16 @@ cursor:pointer;
   background: linear-gradient(180deg, #0c1a2b, #091625);
   box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
+
 </style>
 
 
 <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+<script src="https://js.stripe.com/v3/"></script>
+
+<script>
+const stripe = Stripe("pk_live_51TDrUjEqbVfX9MEYqwYpVkx1toevd5CvIsGQvGxj2Y0RlE1lddmDB9zyZaeAS5IS2F3aHYOIYvyuG6XLIoLQOOTQ00SGj1qgEX");
+</script>
 </head>
 <body>
   <div class="app">
@@ -804,6 +810,7 @@ cursor:pointer;
       <button id="login-btn" class="secondary-btn">Login</button>
       <button id="signup-btn" class="secondary-btn">Sign Up</button>
       <button id="google-btn" class="google-btn">Continue with Google</button>
+      <button id="upgrade-btn" class="secondary-btn" style="color:#7fa6ff;">Upgrade to Pro</button>
     </div>
   </div>
 
@@ -1726,6 +1733,31 @@ document.getElementById("google-btn").onclick = async () => {
       redirectTo: window.location.origin
     }
   });
+};
+
+// ✅ ADD HERE
+document.getElementById("upgrade-btn").onclick = async () => {
+
+  try {
+    const res = await fetch("https://atlas-terminal-api.onrender.com/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await res.json();
+
+    if (!data.id) {
+      showToast("Stripe session failed", "error");
+      return;
+    }
+
+    await stripe.redirectToCheckout({
+      sessionId: data.id
+    });
+
+  } catch (err) {
+    showToast("Payment error", "error");
+  }
 };
 document.querySelector(".backtest-btn").onclick = runBacktest;
 document.querySelector(".searchbox input")
