@@ -1232,6 +1232,12 @@ if (error) {
 
 userId = data.user.id;
 
+// 🔥 FIX: reset guest state after login (CRITICAL)
+guestTries = 0;
+localStorage.setItem("guest_tries", "0");
+
+// close paywall if user logged from it
+closePaywall();
 // 🔥 force instant session sync
 await supabaseClient.auth.getSession();
   document.getElementById("login-btn").innerText = "LOGGED";
@@ -1271,7 +1277,7 @@ if (!isLoggedIn) {
         text-align:center;
         position:relative;
       ">
-<button id="paywall-close" style="
+<button id="paywall-close-guest"style="
   position:absolute;
   top:12px;
   right:12px;
@@ -1325,7 +1331,7 @@ document.getElementById("guest-login-btn").onclick = () => {
   closePaywall();
   document.getElementById("login-modal").style.display = "flex";
 };
-
+document.getElementById("paywall-close-guest").onclick = closePaywall;
 return;
   }
 
