@@ -1249,11 +1249,12 @@ async function signup(email, password) {
   }
 }
 
-function openPaywall(){
-
+async function openPaywall(){
   // 🔥 GUEST USER
-  if (!userId) {
+const { data: { session } } = await supabaseClient.auth.getSession();
+const isLoggedIn = !!session?.user;
 
+if (!isLoggedIn) {
     document.getElementById("paywall-modal").innerHTML = `
       <div style="
         width:360px;
