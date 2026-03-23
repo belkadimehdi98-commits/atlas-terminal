@@ -1285,19 +1285,28 @@ function openPaywall(){
           Create an account to continue using Atlas Terminal.
         </div>
 
-        <button onclick="document.getElementById('signup-modal').style.display='flex'" class="run-btn">
-          Sign Up
-        </button>
+<button id="guest-signup-btn" class="run-btn">
+  Sign Up
+</button>
 
-        <button onclick="document.getElementById('login-modal').style.display='flex'" class="secondary-btn">
-          Login
-        </button>
+<button id="guest-login-btn" class="secondary-btn">
+  Login
+</button>
 
       </div>
     `;
 
     document.getElementById("paywall-modal").style.display = "flex";
     return;
+document.getElementById("guest-signup-btn").onclick = () => {
+  closePaywall();
+  document.getElementById("signup-modal").style.display = "flex";
+};
+
+document.getElementById("guest-login-btn").onclick = () => {
+  closePaywall();
+  document.getElementById("login-modal").style.display = "flex";
+};
   }
 
   // ✅ LOGGED USER → KEEP ORIGINAL PAYWALL
