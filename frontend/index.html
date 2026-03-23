@@ -1251,8 +1251,8 @@ async function signup(email, password) {
 
 async function openPaywall(){
   // 🔥 GUEST USER
-const isLoggedIn = !!userId;
-
+const { data: { session } } = await supabaseClient.auth.getSession();
+const isLoggedIn = !!session?.user;
 if (!isLoggedIn) {
     document.getElementById("paywall-modal").innerHTML = `
 <div style="
@@ -1369,8 +1369,10 @@ const ASSETS = {
 async function runAnalysis(){
 const now = Date.now();
 
-if (!userId) {
-  // Guest: 3 free tries total
+const { data: { session } } = await supabaseClient.auth.getSession();
+const isLoggedIn = !!session?.user;
+
+if (!isLoggedIn)  // Guest: 3 free tries total
   if (guestTries >= 3) {
     openPaywall();
     return;
@@ -1449,10 +1451,12 @@ let data;
 try {
   const res = await fetch(API, {
     method: "POST",
+const { data: { session } } = await supabaseClient.auth.getSession();
+
 headers: {
   "Content-Type": "application/json",
-  "x-device-id": userId || deviceId
-},
+  "x-device-id": session?.user?.id || deviceId
+}
     body: JSON.stringify({ asset })
   });
   data = await res.json();
