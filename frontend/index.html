@@ -1202,6 +1202,8 @@ window.addEventListener('load', async () => {
   // 3. Listen to auth changes (Google critical)
   supabaseClient.auth.onAuthStateChange((event, session) => {
     if (session?.user) {
+userTries = parseInt(localStorage.getItem("user_tries") || "0");
+lastUserTryAt = localStorage.getItem("last_user_try_at") || "0";
       userId = session.user.id;
       document.getElementById("login-btn").innerText = "LOGGED";
       document.getElementById("user-email").innerText = session.user.email;
