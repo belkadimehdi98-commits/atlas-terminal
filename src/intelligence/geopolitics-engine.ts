@@ -48,24 +48,24 @@ export class GeopoliticsEngine {
     };
   }
 
-  private buildImpactChain(summary: GeopoliticalSummary): string {
+private buildImpactChain(summary: GeopoliticalSummary): string {
 
-    if (summary.conflicts.length > 0) {
-      return "Military conflict detected → potential energy supply disruption → inflation risk → risk-off sentiment in global markets";
-    }
-
-    if (summary.sanctions.length > 0) {
-      return "Economic sanctions detected → trade disruption → global supply chain pressure → volatility in commodities and currencies";
-    }
-
-    if (summary.tensions.length > 0) {
-      return "Central bank tension detected → monetary tightening expectations → liquidity contraction → pressure on risk assets";
-    }
-
-    if (summary.politicalEvents.length > 0) {
-      return "Political developments detected → policy uncertainty → investor caution → potential market volatility";
-    }
-
-    return "No significant geopolitical risks detected";
+  if (summary.conflicts.length > 0) {
+    return `${summary.conflicts[0]} → potential energy supply disruption → inflation risk → risk-off sentiment`;
   }
+
+  if (summary.sanctions.length > 0) {
+    return `${summary.sanctions[0]} → trade disruption → supply chain pressure → commodity and FX volatility`;
+  }
+
+  if (summary.tensions.length > 0) {
+    return `${summary.tensions[0]} → monetary tightening expectations → liquidity contraction → pressure on risk assets`;
+  }
+
+  if (summary.politicalEvents.length > 0) {
+    return `${summary.politicalEvents[0]} → policy uncertainty → investor caution → market volatility`;
+  }
+
+  return "No significant geopolitical risks detected";
+}
 }
