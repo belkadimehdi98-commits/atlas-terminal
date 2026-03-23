@@ -1372,13 +1372,15 @@ const now = Date.now();
 const { data: { session } } = await supabaseClient.auth.getSession();
 const isLoggedIn = !!session?.user;
 
-if (!isLoggedIn)  // Guest: 3 free tries total
+if (!isLoggedIn) {  // Guest
   if (guestTries >= 3) {
     openPaywall();
     return;
   }
+
   guestTries++;
   localStorage.setItem("guest_tries", guestTries);
+
 } else {
   // Logged-in user
   const last = parseInt(localStorage.getItem("last_user_try_at") || "0");
@@ -1449,16 +1451,16 @@ document.getElementById("volatility-state").innerText = "-";
 }
 let data;
 try {
-  const res = await fetch(API, {
-    method: "POST",
 const { data: { session } } = await supabaseClient.auth.getSession();
 
-headers: {
-  "Content-Type": "application/json",
-  "x-device-id": session?.user?.id || deviceId
-}
-    body: JSON.stringify({ asset })
-  });
+const res = await fetch(API, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    "x-device-id": session?.user?.id || deviceId
+  },
+  body: JSON.stringify({ asset })
+});
   data = await res.json();
 } catch (err) {
   data = { error: true };
