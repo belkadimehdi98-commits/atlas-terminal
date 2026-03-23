@@ -1296,19 +1296,9 @@ function openPaywall(){
       </div>
     `;
 
-document.getElementById("paywall-modal").style.display = "flex";
-
+    document.getElementById("paywall-modal").style.display = "flex";
+    return;
 document.getElementById("guest-signup-btn").onclick = () => {
-  closePaywall();
-  document.getElementById("signup-modal").style.display = "flex";
-};
-
-document.getElementById("guest-login-btn").onclick = () => {
-  closePaywall();
-  document.getElementById("login-modal").style.display = "flex";
-};
-
-return;
   closePaywall();
   document.getElementById("signup-modal").style.display = "flex";
 };
