@@ -1250,6 +1250,57 @@ async function signup(email, password) {
 }
 
 function openPaywall(){
+
+  // 🔥 GUEST USER
+  if (!userId) {
+
+    document.getElementById("paywall-modal").innerHTML = `
+      <div style="
+        width:360px;
+        padding:26px;
+        border-radius:20px;
+        background:linear-gradient(180deg,#0c1a2b,#091625);
+        border:1px solid rgba(138,165,204,0.18);
+        box-shadow:0 25px 70px rgba(0,0,0,0.6);
+        display:grid;
+        gap:18px;
+        text-align:center;
+      ">
+
+        <div style="
+          font-size:13px;
+          letter-spacing:0.18em;
+          text-transform:uppercase;
+          font-weight:900;
+          color:#7fa6ff;
+        ">
+          CREATE ACCOUNT
+        </div>
+
+        <div style="
+          font-size:15px;
+          color:#dbe7ff;
+          line-height:1.6;
+        ">
+          Create an account to continue using Atlas Terminal.
+        </div>
+
+        <button onclick="document.getElementById('signup-modal').style.display='flex'" class="run-btn">
+          Sign Up
+        </button>
+
+        <button onclick="document.getElementById('login-modal').style.display='flex'" class="secondary-btn">
+          Login
+        </button>
+
+      </div>
+    `;
+
+    document.getElementById("paywall-modal").style.display = "flex";
+    return;
+  }
+
+  // ✅ LOGGED USER → KEEP ORIGINAL PAYWALL
   document.getElementById("paywall-modal").style.display = "flex";
 }
 
