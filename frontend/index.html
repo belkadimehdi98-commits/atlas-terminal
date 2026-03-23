@@ -1770,31 +1770,42 @@ document.getElementById("upgrade-btn").onclick = async () => {
     showToast("Payment error", "error");
   }
 };
-document.getElementById("go-pro-btn").onclick = async () => {
+window.addEventListener("load", () => {
 
-  try {
-    const res = await fetch("https://atlas-terminal-api.onrender.com/create-checkout-session", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" }
-    });
+  const goPro = document.getElementById("go-pro-btn");
+  const closeBtn = document.getElementById("paywall-close");
 
-    const data = await res.json();
+  if (goPro) {
+    goPro.onclick = async () => {
 
-    if (!data.id) {
-      showToast("Stripe session failed", "error");
-      return;
-    }
+      try {
+        const res = await fetch("https://atlas-terminal-api.onrender.com/create-checkout-session", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" }
+        });
 
-    await stripe.redirectToCheckout({
-      sessionId: data.id
-    });
+        const data = await res.json();
 
-  } catch (err) {
-    showToast("Payment error", "error");
+        if (!data.id) {
+          showToast("Stripe session failed", "error");
+          return;
+        }
+
+        await stripe.redirectToCheckout({
+          sessionId: data.id
+        });
+
+      } catch (err) {
+        showToast("Payment error", "error");
+      }
+    };
   }
-};
 
-document.getElementById("paywall-close").onclick = closePaywall;
+  if (closeBtn) {
+    closeBtn.onclick = closePaywall;
+  }
+
+});
 document.querySelector(".backtest-btn").onclick = runBacktest;
 document.querySelector(".searchbox input")
   .addEventListener("keypress", function(e){
