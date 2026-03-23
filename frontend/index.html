@@ -1309,6 +1309,15 @@ document.getElementById("guest-login-btn").onclick = () => {
 };
 
 return;
+  closePaywall();
+  document.getElementById("signup-modal").style.display = "flex";
+};
+
+document.getElementById("guest-login-btn").onclick = () => {
+  closePaywall();
+  document.getElementById("login-modal").style.display = "flex";
+};
+  }
 
   // ✅ LOGGED USER → KEEP ORIGINAL PAYWALL
   document.getElementById("paywall-modal").style.display = "flex";
