@@ -79,15 +79,15 @@
   gap:12px;
 }
 
-    .brand-kicker {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.18em;
-      color: var(--accent);
-      font-weight: 700;
-    }
-display:block;
-line-height:1;
+.brand-kicker {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  font-weight: 700;
+  display: block;
+  line-height: 1;
+}
 
     .brand-title {
       font-size: 22px;
@@ -1251,12 +1251,11 @@ async function signup(email, password) {
 
 async function openPaywall(){
   // 🔥 GUEST USER
-const { data: { session } } = await supabaseClient.auth.getSession();
-const isLoggedIn = !!session?.user;
+const isLoggedIn = !!userId;
 
 if (!isLoggedIn) {
     document.getElementById("paywall-modal").innerHTML = `
-      <div style="
+<div style="
         width:360px;
         padding:26px;
         border-radius:20px;
@@ -1266,7 +1265,21 @@ if (!isLoggedIn) {
         display:grid;
         gap:18px;
         text-align:center;
+        position:relative;
       ">
+<button id="paywall-close" style="
+  position:absolute;
+  top:12px;
+  right:12px;
+  width:28px;
+  height:28px;
+  border:none;
+  border-radius:8px;
+  background:#102033;
+  color:#cfe1ff;
+  font-weight:900;
+  cursor:pointer;
+">×</button>
 
         <div style="
           font-size:13px;
