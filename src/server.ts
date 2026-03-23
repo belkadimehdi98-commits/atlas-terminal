@@ -37,7 +37,80 @@ const supabase = createClient(
 );
 const app = express();
 app.use(cors());
-app.use(express.json());
+app.use((req, res, next) => {
+  if (req.originalUrl === "/stripe-webhook") {
+    next();
+  } else {
+    express.json()(req, res, next);
+  }
+});
+// STRIPE WEBHOOK (RAW BODY REQUIRED)
+app.post("/stripe-webhook",
+  express.raw({ type: "application/json" }),
+  async (req, res) => {
+
+    const sig = req.headers["stripe-signature"];
+
+    let event;
+
+    try {
+      event = stripe.webhooks.constructEvent(
+        req.body,
+        sig!,
+        process.env.STRIPE_WEBHOOK_SECRET!
+      );
+    } catch (err) {
+      console.error("Webhook signature failed");
+      return res.sendStatus(400);
+    }
+
+    try {
+
+      // PAYMENT SUCCESS
+      if (event.type === "checkout.session.completed") {
+        const session = event.data.object as any;
+
+        const email = session.customer_details?.email;
+
+        if (email) {
+          await supabase
+            .from("users")
+            .update({
+              is_pro: true
+            })
+            .eq("email", email);
+        }
+      }
+
+      // SUBSCRIPTION CANCELED / FAILED
+      if (
+        event.type === "customer.subscription.deleted" ||
+        event.type === "invoice.payment_failed"
+      ) {
+        const sub = event.data.object as any;
+
+        const customerId = sub.customer;
+
+        const customer = await stripe.customers.retrieve(customerId);
+
+        if ("email" in customer && customer.email) {
+          await supabase
+            .from("users")
+            .update({
+              is_pro: false
+            })
+            .eq("email", customer.email);
+        }
+      }
+
+      res.json({ received: true });
+
+    } catch (err) {
+      console.error("Webhook error:", err);
+      res.sendStatus(500);
+    }
+  }
+);
 
 app.post("/api/analyze", async (req, res) => {
 console.log("STEP 1: start analyze");
@@ -60,14 +133,37 @@ if (!store[deviceId]) {
 const authHeader = req.headers.authorization;
 
 let userId = null;
-
+let userEmail = null;
 if (authHeader) {
   const token = authHeader.replace("Bearer ", "");
 
   const { data, error } = await supabase.auth.getUser(token);
 
-  if (!error && data?.user) {
-    userId = data.user.id;
+if (!error && data?.user) {
+  userId = data.user.id;
+  userEmail = data.user.email;
+}
+}
+// ===== ENSURE USER EXISTS IN public.users =====
+if (userId) {
+  await supabase
+    .from("users")
+    .upsert({
+      id: userId,
+      email: userEmail
+    }, { onConflict: "id" });
+}
+let isPro = false;
+
+if (userId) {
+  const { data } = await supabase
+    .from("users")
+    .select("is_pro")
+    .eq("id", userId)
+    .single();
+
+  if (data?.is_pro) {
+    isPro = true;
   }
 }
 const maxFree = 3;
@@ -82,13 +178,53 @@ if (!userId && currentCount >= maxFree) {
   });
 }
 
-if (userId && currentCount >= maxWithAccount) {
+if (userId && !isPro && currentCount >= maxWithAccount) {
   return res.status(403).json({
     error: "SUBSCRIPTION_REQUIRED",
     message: "Subscribe to continue"
   });
 }
 
+// ===== PRO DAILY LIMIT =====
+if (userId && isPro) {
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  const { data } = await supabase
+    .from("users")
+    .select("daily_usage, last_usage_reset")
+    .eq("id", userId)
+    .single();
+
+  let usage = data?.daily_usage || 0;
+  let lastReset = data?.last_usage_reset || today;
+
+  if (lastReset !== today) {
+    usage = 0;
+    await supabase
+      .from("users")
+      .update({
+        daily_usage: 0,
+        last_usage_reset: today
+      })
+      .eq("id", userId);
+  }
+
+  if (usage >= 10) {
+    return res.status(403).json({
+      error: "DAILY_LIMIT_REACHED",
+      message: "Daily limit reached (10/day)"
+    });
+  }
+
+  await supabase
+    .from("users")
+    .update({
+      daily_usage: usage + 1,
+      last_usage_reset: today
+    })
+    .eq("id", userId);
+}
 store[deviceId].count += 1;
 
 console.log("USAGE:", deviceId, store[deviceId].count);

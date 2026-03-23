@@ -1454,14 +1454,14 @@ if (data.confidence_breakdown) {
 document.getElementById("asset-type").innerText = data.asset;
 if(data.direction !== "NO_TRADE"){
 document.querySelectorAll(".level-value")[0].innerText =
-  data.entry ? Number(data.entry).toFixed(5) : "N/A";
+  data.entry ? Number(data.entry).toFixed(2) : "N/A";
 
 document.querySelectorAll(".level-value")[1].innerText =
-  data.stop_loss ? Number(data.stop_loss).toFixed(5) : "—";
+  data.stop_loss ? Number(data.stop_loss).toFixed(2) : "—";
 
 document.querySelectorAll(".level-value")[2].innerText =
   data.targets
-    ? data.targets.map(t => Number(t).toFixed(5)).join(" / ")
+    ? data.targets.map(t => Number(t).toFixed(2)).join(" / ")
     : "—";
 }
 
@@ -1740,7 +1740,7 @@ document.getElementById("login-modal").style.display = "flex";
 };
 
 document.getElementById("signup-btn").onclick = () => {
-  showToast("Create account using Google or login modal", "error");
+  document.getElementById("signup-modal").style.display = "flex";
 };
 document.getElementById("google-btn").onclick = async () => {
   await supabaseClient.auth.signInWithOAuth({
@@ -2018,6 +2018,33 @@ if (success) {
     };
   }
 
+  // 🔥 ADD HERE
+  const signupSubmit = document.getElementById("signup-submit");
+  const signupClose = document.getElementById("signup-close");
+
+  if (signupSubmit) {
+    signupSubmit.onclick = async () => {
+
+      const email = document.getElementById("signup-email").value.trim();
+      const password = document.getElementById("signup-password").value.trim();
+
+      if (!email || !password) {
+        showToast("Email and password are required.", "error");
+        return;
+      }
+
+      await signup(email, password);
+
+      document.getElementById("signup-modal").style.display = "none";
+    };
+  }
+
+  if (signupClose) {
+    signupClose.onclick = () => {
+      document.getElementById("signup-modal").style.display = "none";
+    };
+  }
+
 });
 </script>
 <div style="
@@ -2242,6 +2269,65 @@ function showToast(message, type="success"){
 
   </div>
 </div>
+<div id="signup-modal" style="
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(6px);
+  z-index:9999;
+">
+
+  <div style="
+    width:340px;
+    padding:24px;
+    border-radius:18px;
+    background:linear-gradient(180deg,#0c1a2b,#091625);
+    border:1px solid rgba(138,165,204,0.18);
+    box-shadow:0 20px 60px rgba(0,0,0,0.5);
+    display:grid;
+    gap:16px;
+  ">
+
+    <div style="
+      font-size:14px;
+      letter-spacing:0.14em;
+      text-transform:uppercase;
+      font-weight:900;
+      color:#7fa6ff;
+    ">
+      Sign Up
+    </div>
+
+    <input id="signup-email" placeholder="Email" style="
+      height:42px;
+      border-radius:10px;
+      border:1px solid rgba(138,165,204,0.18);
+      background:#0b1624;
+      color:#edf3ff;
+      padding:0 12px;
+      outline:none;
+    ">
+
+    <input id="signup-password" type="password" placeholder="Password" style="
+      height:42px;
+      border-radius:10px;
+      border:1px solid rgba(138,165,204,0.18);
+      background:#0b1624;
+      color:#edf3ff;
+      padding:0 12px;
+      outline:none;
+    ">
+
+    <div style="display:flex; gap:10px;">
+      <button id="signup-submit" class="run-btn" style="flex:1;">Create</button>
+      <button id="signup-close" class="secondary-btn" style="flex:1;">Cancel</button>
+    </div>
+
+  </div>
+</div>
 <div id="paywall-modal" style="
   position:fixed;
   inset:0;
@@ -2294,5 +2380,6 @@ function showToast(message, type="success"){
 
   </div>
 </div>
+
 </body>
 </html>
