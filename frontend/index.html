@@ -299,6 +299,7 @@ cursor:pointer;
 .left-column{
   display:grid;
   gap:16px;
+  width:100%;
 }
 .decision-panel,
 .analysis-panel {
@@ -764,6 +765,7 @@ cursor:pointer;
   display: grid;
   gap: 18px;
   margin-top: 12px;
+  grid-column: 1 / -1;
 }
 
 .ai-section {
@@ -987,6 +989,9 @@ Select an asset to load market data
 
 </div>
 
+      
+
+</aside>
 <div class="ai-block">
 
   <div class="ai-section">
@@ -1003,9 +1008,7 @@ Select an asset to load market data
     </div>
   </div>
 
-</div>        
-
-</aside>
+</div>  
 
 </div>
         <section class="decision-panel">
@@ -1240,6 +1243,14 @@ async function signup(email, password) {
     showToast("Verification email sent", "success");
   }
 }
+
+function openPaywall(){
+  document.getElementById("paywall-modal").style.display = "flex";
+}
+
+function closePaywall(){
+  document.getElementById("paywall-modal").style.display = "none";
+}
 </script>
 <script>
 let deviceId = localStorage.getItem("device_id");
@@ -1280,7 +1291,7 @@ const now = Date.now();
 if (!userId) {
   // Guest: 3 free tries total
   if (guestTries >= 3) {
-    showToast("Free limit reached. Please sign up.", "error");
+    openPaywall();
     return;
   }
   guestTries++;
@@ -1297,7 +1308,7 @@ if (!userId) {
   } else {
     // After → 1 per 24h
     if (now - last < 24 * 60 * 60 * 1000) {
-showToast("Daily limit reached. Upgrade to Pro for unlimited analysis.", "error");
+openPaywall();
       return;
     }
     // allow 1 try, reset last_user_try_at
@@ -1759,6 +1770,31 @@ document.getElementById("upgrade-btn").onclick = async () => {
     showToast("Payment error", "error");
   }
 };
+document.getElementById("go-pro-btn").onclick = async () => {
+
+  try {
+    const res = await fetch("https://atlas-terminal-api.onrender.com/create-checkout-session", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" }
+    });
+
+    const data = await res.json();
+
+    if (!data.id) {
+      showToast("Stripe session failed", "error");
+      return;
+    }
+
+    await stripe.redirectToCheckout({
+      sessionId: data.id
+    });
+
+  } catch (err) {
+    showToast("Payment error", "error");
+  }
+};
+
+document.getElementById("paywall-close").onclick = closePaywall;
 document.querySelector(".backtest-btn").onclick = runBacktest;
 document.querySelector(".searchbox input")
   .addEventListener("keypress", function(e){
@@ -2187,6 +2223,58 @@ function showToast(message, type="success"){
 <button type="button" id="login-submit" class="run-btn" style="flex:1;">Login</button>
 <button type="button" id="login-close" class="secondary-btn" style="flex:1;">Cancel</button>
     </div>
+
+  </div>
+</div>
+<div id="paywall-modal" style="
+  position:fixed;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(6px);
+  z-index:9999;
+">
+
+  <div style="
+    width:360px;
+    padding:26px;
+    border-radius:20px;
+    background:linear-gradient(180deg,#0c1a2b,#091625);
+    border:1px solid rgba(138,165,204,0.18);
+    box-shadow:0 25px 70px rgba(0,0,0,0.6);
+    display:grid;
+    gap:18px;
+    text-align:center;
+  ">
+
+    <div style="
+      font-size:13px;
+      letter-spacing:0.18em;
+      text-transform:uppercase;
+      font-weight:900;
+      color:#7fa6ff;
+    ">
+      PRO ACCESS REQUIRED
+    </div>
+
+    <div style="
+      font-size:15px;
+      color:#dbe7ff;
+      line-height:1.6;
+    ">
+      You’ve reached your free limit.<br>
+      Upgrade to Pro for unlimited AI trading decisions.
+    </div>
+
+    <button id="go-pro-btn" class="run-btn" style="width:100%;">
+      Upgrade to Pro
+    </button>
+
+    <button id="paywall-close" class="secondary-btn" style="width:100%;">
+      Maybe later
+    </button>
 
   </div>
 </div>
