@@ -73,10 +73,11 @@
       align-items: center;
     }
 
-    .brand {
-      display: grid;
-      gap: 4px;
-    }
+.brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
 
     .brand-kicker {
       font-size: 10px;
@@ -85,6 +86,8 @@
       color: var(--accent);
       font-weight: 700;
     }
+display:block;
+line-height:1;
 
     .brand-title {
       font-size: 22px;
@@ -673,7 +676,7 @@ cursor:pointer;
   background:#102033 !important;
 }
 .topbar{
-  padding:20px 24px;
+  padding:24px 28px;
 }
 
 .searchbar{
@@ -791,10 +794,16 @@ const stripe = Stripe("pk_live_51TDrUjEqbVfX9MEYqwYpVkx1toevd5CvIsGQvGxj2Y0RlE1l
     <div class="shell">
 <div class="topbar">
 
-  <div class="brand">
-    <div class="brand-kicker">Institutional AI Terminal</div>
-    <div class="brand-title">Atlas Terminal</div>
-  </div>
+<div class="brand">
+
+<img src="frontend/logo.png"> alt="Atlas Terminal" style="
+  height:70px;
+  display:block;
+  filter: drop-shadow(0 0 10px rgba(95,143,255,0.5));
+">
+  <div class="brand-kicker">Institutional AI Terminal</div>
+
+</div>
 
   
 <div id="user-email" style="
