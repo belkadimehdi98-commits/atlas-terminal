@@ -1159,8 +1159,7 @@ const supabaseClient = supabase.createClient(
 let userId = null;
 let guestTries = parseInt(localStorage.getItem("guest_tries") || "0");
 let userTries = parseInt(localStorage.getItem("user_tries") || "0");
-let lastUserTryAt = localStorage.getItem("last_user_try_at") || null;
-
+let lastUserTryAt = parseInt(localStorage.getItem("last_user_try_at") || "0");
 // CHECK SESSION ON PAGE LOAD
 window.addEventListener('load', async () => {
 
@@ -1200,19 +1199,22 @@ window.addEventListener('load', async () => {
   }
 
   // 3. Listen to auth changes (Google critical)
-  supabaseClient.auth.onAuthStateChange((event, session) => {
-    if (session?.user) {
-      userId = session.user.id;
-      document.getElementById("login-btn").innerText = "LOGGED";
-      document.getElementById("user-email").innerText = session.user.email;
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (session?.user) {
 
-      if (!localStorage.getItem("user_initialized")) {
-        localStorage.setItem("user_initialized", "true");
-        localStorage.setItem("user_tries", "0");
-        localStorage.setItem("last_user_try_at", "0");
-      }
+    userTries = parseInt(localStorage.getItem("user_tries") || "0");
+
+    userId = session.user.id;
+    document.getElementById("login-btn").innerText = "LOGGED";
+    document.getElementById("user-email").innerText = session.user.email;
+
+    if (!localStorage.getItem("user_initialized")) {
+      localStorage.setItem("user_initialized", "true");
+      localStorage.setItem("user_tries", "0");
+      localStorage.setItem("last_user_try_at", "0");
     }
-  });
+  }
+});
 
 });
 
@@ -1367,7 +1369,11 @@ const ASSETS = {
   ]
 };
 async function runAnalysis(){
-const now = Date.now();
+
+  userTries = parseInt(localStorage.getItem("user_tries") || "0");
+  lastUserTryAt = parseInt(localStorage.getItem("last_user_try_at") || "0");
+
+  const now = Date.now();
 
 const { data: { session } } = await supabaseClient.auth.getSession();
 const isLoggedIn = !!session?.user;
