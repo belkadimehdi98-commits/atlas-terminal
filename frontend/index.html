@@ -1199,24 +1199,21 @@ window.addEventListener('load', async () => {
     window.history.replaceState({}, document.title, window.location.pathname);
   }
 
-// 3. Listen to auth changes (Google critical)
-supabaseClient.auth.onAuthStateChange((event, session) => {
-  if (session?.user) {
-    userTries = parseInt(localStorage.getItem("user_tries") || "0");
-    lastUserTryAt = localStorage.getItem("last_user_try_at") || "0";
+  // 3. Listen to auth changes (Google critical)
+  supabaseClient.auth.onAuthStateChange((event, session) => {
+    if (session?.user) {
+      userId = session.user.id;
+      document.getElementById("login-btn").innerText = "LOGGED";
+      document.getElementById("user-email").innerText = session.user.email;
 
-    userId = session.user.id;
-    document.getElementById("login-btn").innerText = "LOGGED";
-    document.getElementById("user-email").innerText = session.user.email;
-
-    if (!localStorage.getItem("user_initialized")) {
-      localStorage.setItem("user_initialized", "true");
-      localStorage.setItem("user_tries", "0");
-      localStorage.setItem("last_user_try_at", "0");
+      if (!localStorage.getItem("user_initialized")) {
+        localStorage.setItem("user_initialized", "true");
+        localStorage.setItem("user_tries", "0");
+        localStorage.setItem("last_user_try_at", "0");
+      }
     }
+  });
 
-    closePaywall(); // ✅ FIX
-  }
 });
 
 
@@ -1370,11 +1367,6 @@ const ASSETS = {
   ]
 };
 async function runAnalysis(){
-// 🔥 force fresh session (fix paywall bug)
-const { data: { session } } = await supabaseClient.auth.getSession();
-if (session?.user) {
-  userId = session.user.id;
-}
 const now = Date.now();
 
 if (!userId) {
