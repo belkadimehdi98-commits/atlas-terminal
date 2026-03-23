@@ -1230,8 +1230,10 @@ if (error) {
   return false;
 }
 
-  userId = data.user.id;
+userId = data.user.id;
 
+// 🔥 force instant session sync
+await supabaseClient.auth.getSession();
   document.getElementById("login-btn").innerText = "LOGGED";
 
   showToast("Login successful", "success");
