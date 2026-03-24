@@ -606,18 +606,13 @@ cursor:pointer;
   padding-top:14px;
 }
 
-@media (max-width: 980px) {
-  .topbar {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .workspace,
-  .decision-footer,
-  .system-row {
-    grid-template-columns: 1fr;
-  }
+    @media (max-width: 980px) {
+      .topbar,
+      .workspace,
+      .decision-footer,
+      .system-row {
+        grid-template-columns: 1fr;
+      }
 
       .quick-assets { justify-content: flex-start; }
       .decision-header { grid-template-columns: 1fr; }
@@ -628,71 +623,15 @@ cursor:pointer;
       .decision-value { font-size: 56px; }
     }
 
-@media (max-width: 640px) {
-  body { padding: 10px; }
-
-  .topbar,
-  .workspace,
-  .decision-panel,
-  .analysis-panel {
-    padding: 14px;
-  }
-
-  /* 🔥 SEARCH + ACTION FIX */
-  .searchbar {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-  }
-
-  .action-stack {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: 10px;
-  }
-
-  .run-btn,
-  .secondary-btn {
-    width: 100%;
-    min-width: unset;
-  }
-
-  .backtest-row {
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 8px;
-  }
-
-  .backtest-inline {
-    justify-content: center;
-    text-align: center;
-  }
-
-  /* TEXT SCALE */
-  .asset-name { font-size: 30px; }
-  .decision-value { font-size: 48px; }
-  .level-value { font-size: 24px; }
-
-.asset-nav {
-  align-items: flex-start;
-}
-
-.asset-tabs {
-  overflow-x: auto;
-  width: 100%;
-  padding-bottom: 6px;
-}
-
-.asset-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.asset-tab {
-  flex: 0 0 auto;
-}
+    @media (max-width: 640px) {
+      body { padding: 10px; }
+      .topbar, .workspace, .decision-panel, .analysis-panel { padding: 14px; }
+      .searchbar { grid-template-columns: 1fr; }
+      .run-btn { width: 100%; }
+      .asset-name { font-size: 30px; }
+      .decision-value { font-size: 48px; }
+      .level-value { font-size: 24px; }
+    }
 .account-dropdown{
   position:relative;
 }
@@ -924,8 +863,7 @@ const stripe = Stripe("pk_live_51TDrUjEqbVfX9MEYqwYpVkx1toevd5CvIsGQvGxj2Y0RlE1l
   <div class="left-column">
 <div style="
 position:relative;
-height:38vh;
-min-height:260px;
+height:280px;
 margin-bottom:6px;
 border-radius:18px;
 overflow:hidden;
