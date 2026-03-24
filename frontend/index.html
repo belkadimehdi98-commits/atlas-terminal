@@ -1556,16 +1556,11 @@ let data;
 try {
 const { data: { session } } = await supabaseClient.auth.getSession();
 
-const { data: { session } } = await supabaseClient.auth.getSession();
-
 const res = await fetch(API, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "x-device-id": session?.user?.id || deviceId,
-    "Authorization": session?.access_token
-      ? `Bearer ${session.access_token}`
-      : ""
+    "x-device-id": session?.user?.id || deviceId
   },
   body: JSON.stringify({ asset })
 });
