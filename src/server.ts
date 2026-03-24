@@ -154,7 +154,11 @@ if (userId) {
     }, { onConflict: "id" });
 }
 let isPro = false;
-
+console.log("USER CHECK:", {
+  userId,
+  userEmail,
+  isPro
+});
 if (userId) {
   const { data } = await supabase
     .from("users")
