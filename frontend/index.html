@@ -634,6 +634,26 @@ cursor:pointer;
     }
 .account-dropdown{
   position:relative;
+  justify-self:start;
+}
+
+@media (max-width: 768px) {
+  .account-dropdown {
+    width: 100%;
+  }
+
+  #account-btn {
+    width: 100%;
+  }
+
+  .dropdown-menu {
+    top: calc(100% + 8px);
+    left: 0;
+    right: auto;
+    min-width: 100%;
+    width: 100%;
+    z-index: 1000;
+  }
 }
 
 .dropdown-menu{
