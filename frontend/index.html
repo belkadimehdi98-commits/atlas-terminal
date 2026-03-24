@@ -873,6 +873,30 @@ align-items:flex-start;
     justify-content: flex-start;
   }
 }
+@media (max-width: 768px) {
+
+  .workspace {
+    display: flex;
+    flex-direction: column;
+  }
+
+.left-column {
+  display: contents;
+}
+
+.decision-panel {
+  order: 2;
+}
+
+.analysis-panel {
+  order: 3;
+}
+
+.ai-block {
+  order: 4;
+}
+
+}
 </style>
 
 
@@ -1518,7 +1542,6 @@ setTimeout(() => {
 }
 
 
-document.getElementById("paywall-close").onclick = closePaywall;
 function closePaywall(){
   document.getElementById("paywall-modal").style.display = "none";
 }
