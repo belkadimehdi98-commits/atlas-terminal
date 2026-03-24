@@ -226,6 +226,21 @@ cursor:pointer;
   justify-content:flex-start;
 }
 
+@media (max-width: 768px) {
+  .asset-tabs {
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 6px;
+  }
+
+  .asset-tabs::-webkit-scrollbar {
+    display: none;
+  }
+
+  .asset-tab {
+    flex: 0 0 auto;
+  }
+}
 .asset-tab{
   height:34px;
   padding:0 12px;
