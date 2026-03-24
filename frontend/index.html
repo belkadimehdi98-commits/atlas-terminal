@@ -778,7 +778,65 @@ cursor:pointer;
   background: linear-gradient(180deg, #0c1a2b, #091625);
   box-shadow: 0 6px 20px rgba(0,0,0,0.25);
 }
+@media (max-width: 768px) {
+  .topbar {
+    grid-template-columns: 1fr;
+    padding: 16px;
+    gap: 14px;
+  }
 
+  .brand {
+    justify-content: flex-start;
+  }
+
+  #user-email {
+    text-align: left !important;
+    justify-self: start !important;
+  }
+
+  .account-dropdown {
+    justify-self: start;
+  }
+
+  .searchbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    margin-top: 8px;
+  }
+
+  .searchbox {
+    flex: 1 1 auto;
+    width: 100%;
+  }
+
+  .action-stack {
+    width: 100%;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .backtest-row {
+    width: 100%;
+    margin-left: 0;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+  }
+
+  .run-btn,
+  .secondary-btn {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .backtest-inline {
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-start;
+  }
+}
 </style>
 
 
