@@ -1555,12 +1555,14 @@ document.getElementById("volatility-state").innerText = "-";
 let data;
 try {
 const { data: { session } } = await supabaseClient.auth.getSession();
-
 const res = await fetch(API, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "x-device-id": session?.user?.id || deviceId
+    "x-device-id": session?.user?.id || deviceId,
+    "Authorization": session?.access_token
+      ? `Bearer ${session.access_token}`
+      : ""
   },
   body: JSON.stringify({ asset })
 });
