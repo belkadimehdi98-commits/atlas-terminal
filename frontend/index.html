@@ -880,21 +880,27 @@ align-items:flex-start;
     flex-direction: column;
   }
 
-.left-column {
-  display: contents;
-}
+  .left-column {
+    display: contents;
+  }
 
-.decision-panel {
-  order: 2;
-}
+  .decision-panel {
+    order: 2;
+  }
 
-.analysis-panel {
-  order: 3;
-}
+  .decision-panel,
+  .analysis-panel,
+  .ai-block {
+    width: 100%;
+  }
 
-.ai-block {
-  order: 4;
-}
+  .analysis-panel {
+    order: 3;
+  }
+
+  .ai-block {
+    order: 4;
+  }
 
 }
 </style>
