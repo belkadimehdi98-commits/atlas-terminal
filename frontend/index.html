@@ -1231,13 +1231,20 @@ if (error) {
 }
 
 userId = data.user.id;
-
+await new Promise(r => setTimeout(r, 100));
 // 🔥 FIX: reset guest state after login (CRITICAL)
 guestTries = 0;
 localStorage.setItem("guest_tries", "0");
 
 // close paywall if user logged from it
 closePaywall();
+
+// ✅ FIX: wait for real auth state (no race)
+supabaseClient.auth.onAuthStateChange((event, session) => {
+  if (event === "SIGNED_IN" && session?.user) {
+    openPaywall();
+  }
+});;
 // 🔥 force instant session sync
 await supabaseClient.auth.getSession();
   document.getElementById("login-btn").innerText = "LOGGED";
@@ -1260,10 +1267,12 @@ async function signup(email, password) {
 }
 
 async function openPaywall(){
+console.log("OPEN PAYWALL CALLED");
   // 🔥 GUEST USER
 const { data: { session } } = await supabaseClient.auth.getSession();
+console.log("IS LOGGED IN:", !!session?.user);
 const isLoggedIn = !!session?.user;
-if (!isLoggedIn) {
+if (!session?.user) {
     document.getElementById("paywall-modal").innerHTML = `
 <div style="
         width:360px;
@@ -1322,6 +1331,11 @@ if (!isLoggedIn) {
 
 document.getElementById("paywall-modal").style.display = "flex";
 
+const closeBtn = document.getElementById("paywall-close");
+if (closeBtn) closeBtn.onclick = closePaywall;
+// 🔥 bind buttons AFTER rendering
+
+
 document.getElementById("guest-signup-btn").onclick = () => {
   closePaywall();
   document.getElementById("signup-modal").style.display = "flex";
@@ -1335,9 +1349,82 @@ document.getElementById("paywall-close-guest").onclick = closePaywall;
 return;
   }
 
-  // ✅ LOGGED USER → KEEP ORIGINAL PAYWALL
+// ✅ logged user → FORCE PRO PAYWALL HTML
+document.getElementById("paywall-modal").innerHTML = `
+<div style="
+  width:360px;
+  padding:26px;
+  border-radius:20px;
+  background:linear-gradient(180deg,#0c1a2b,#091625);
+  border:1px solid rgba(138,165,204,0.18);
+  box-shadow:0 25px 70px rgba(0,0,0,0.6);
+  display:grid;
+  gap:18px;
+  text-align:center;
+">
+
+  <div style="
+    font-size:13px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    font-weight:900;
+    color:#7fa6ff;
+  ">
+    PRO ACCESS REQUIRED
+  </div>
+
+  <div style="
+    font-size:15px;
+    color:#dbe7ff;
+    line-height:1.6;
+  ">
+    You’ve reached your free limit.<br>
+    Upgrade to Pro for unlimited AI trading decisions.
+  </div>
+
+  <button id="go-pro-btn" class="run-btn" style="width:100%;">
+    Upgrade to Pro
+  </button>
+
+  <button id="paywall-close" class="secondary-btn" style="width:100%;">
+    Maybe later
+  </button>
+
+</div>
+`;
+
+document.getElementById("paywall-modal").style.display = "flex";
+setTimeout(() => {
+  const goPro = document.getElementById("go-pro-btn");
+  const close = document.getElementById("paywall-close");
+
+  if (goPro) {
+    goPro.onclick = async () => {
+      const res = await fetch("https://atlas-terminal-api.onrender.com/create-checkout-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+
+      const data = await res.json();
+
+      if (!data.id) {
+        showToast("Stripe session failed", "error");
+        return;
+      }
+
+      await stripe.redirectToCheckout({ sessionId: data.id });
+    };
+  }
+
+  if (close) {
+    close.onclick = closePaywall;
+  }
+
+}, 50);
 }
 
+
+document.getElementById("paywall-close").onclick = closePaywall;
 function closePaywall(){
   document.getElementById("paywall-modal").style.display = "none";
 }
@@ -1384,6 +1471,10 @@ async function runAnalysis(){
 
 const { data: { session } } = await supabaseClient.auth.getSession();
 const isLoggedIn = !!session?.user;
+console.log("DEBUG LOGIN STATE:", {
+  userId,
+  isLoggedIn
+});
 if (!isLoggedIn) {  // Guest
   if (guestTries >= 3) {
     openPaywall();
@@ -1465,11 +1556,16 @@ let data;
 try {
 const { data: { session } } = await supabaseClient.auth.getSession();
 
+const { data: { session } } = await supabaseClient.auth.getSession();
+
 const res = await fetch(API, {
   method: "POST",
   headers: {
     "Content-Type": "application/json",
-    "x-device-id": session?.user?.id || deviceId
+    "x-device-id": session?.user?.id || deviceId,
+    "Authorization": session?.access_token
+      ? `Bearer ${session.access_token}`
+      : ""
   },
   body: JSON.stringify({ asset })
 });
@@ -1809,7 +1905,9 @@ document.querySelector(".run-btn").onclick = runAnalysis;
 document.getElementById("login-btn").onclick = async () => {
 
   // LOGOUT FLOW
-  if (userId) {
+const { data: { session } } = await supabaseClient.auth.getSession();
+
+if (session?.user) {
     const { error } = await supabaseClient.auth.signOut();
 
     if (error) {
