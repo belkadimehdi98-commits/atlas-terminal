@@ -875,6 +875,11 @@ align-items:flex-start;
 }
 @media (max-width: 768px) {
 
+  /* ✅ SHOW MOBILE HINT */
+  #mobile-hint{
+    display:block;
+  }
+
   .workspace {
     display: flex;
     flex-direction: column;
@@ -916,6 +921,19 @@ const stripe = Stripe("pk_live_51TDrUjEqbVfX9MEYqwYpVkx1toevd5CvIsGQvGxj2Y0RlE1l
 <body>
   <div class="app">
     <div class="shell">
+<div id="mobile-hint" style="
+  display:none;
+  padding:10px 14px;
+  font-size:12px;
+  font-weight:700;
+  letter-spacing:0.06em;
+  color:#bcd2ff;
+  background:linear-gradient(90deg,#0f2138,#0b1624);
+  border-bottom:1px solid rgba(138,165,204,0.14);
+  text-align:center;
+">
+  Optimized for a professional desktop trading experience
+</div>
 <div class="topbar">
 
 <div class="brand">
@@ -2692,6 +2710,30 @@ function showToast(message, type="success"){
 
   </div>
 </div>
+<script>
+/* MOBILE HINT → show once + auto hide */
 
+window.addEventListener("load", () => {
+
+  const hint = document.getElementById("mobile-hint");
+
+  if (!hint) return;
+
+  const isMobile = window.innerWidth <= 768;
+  const alreadySeen = localStorage.getItem("mobile_hint_seen");
+
+  if (isMobile && !alreadySeen) {
+
+    hint.style.display = "block";
+
+    setTimeout(() => {
+      hint.style.display = "none";
+    }, 5000);
+
+    localStorage.setItem("mobile_hint_seen", "true");
+  }
+
+});
+</script>
 </body>
 </html>
