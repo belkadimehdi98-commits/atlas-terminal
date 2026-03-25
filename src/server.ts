@@ -175,11 +175,19 @@ if (userId) {
     }, { onConflict: "id" });
 }
 let isPro = false;
+
+// ✅ ADMIN BYPASS (ONLY YOU)
+const ADMIN_EMAIL = "mehdibelkadi2024@gmail.com";
+if (userEmail === ADMIN_EMAIL) {
+  isPro = true;
+}
+
 console.log("USER CHECK:", {
   userId,
   userEmail,
   isPro
 });
+
 if (userId) {
   const { data } = await supabase
     .from("users")
