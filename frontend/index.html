@@ -1601,33 +1601,31 @@ console.log("DEBUG LOGIN STATE:", {
 // ✅ ADMIN BYPASS (FRONTEND)
 if (isAdmin) {
   console.log("ADMIN FRONTEND BYPASS");
-} else {
-if (!isLoggedIn) {  // Guest
+
+} else if (!isLoggedIn) {  // Guest
+
   if (guestTries >= 3) {
     openPaywall();
     return;
- }
-}
+  }
 
   guestTries++;
   localStorage.setItem("guest_tries", guestTries);
 
-} else {
-  // Logged-in user
+} else {  // Logged user
+
   const last = parseInt(localStorage.getItem("last_user_try_at") || "0");
 
   if (userTries < 2) {
-    // First 2 free tries
     userTries++;
     localStorage.setItem("user_tries", userTries);
     localStorage.setItem("last_user_try_at", now);
   } else {
-    // After → 1 per 24h
     if (now - last < 24 * 60 * 60 * 1000) {
-openPaywall();
+      openPaywall();
       return;
     }
-    // allow 1 try, reset last_user_try_at
+
     localStorage.setItem("last_user_try_at", now);
   }
 }
