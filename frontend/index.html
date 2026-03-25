@@ -1621,10 +1621,11 @@ if (isAdmin) {
     localStorage.setItem("user_tries", userTries);
     localStorage.setItem("last_user_try_at", now);
   } else {
-    if (now - last < 24 * 60 * 60 * 1000) {
-      openPaywall();
-      return;
-    }
+if (now - last < 24 * 60 * 60 * 1000) {
+  showToast("Daily limit reached (10 analyses). Try again in 24 hours.", "error");
+  openPaywall();
+  return;
+}
 
     localStorage.setItem("last_user_try_at", now);
   }

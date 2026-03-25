@@ -195,8 +195,10 @@ if (userId) {
 // ✅ ADMIN BYPASS (FINAL OVERRIDE)
 const ADMIN_EMAIL = "mehdibelkadi2024@gmail.com";
 
-if (userEmail === ADMIN_EMAIL) {
-  isPro = true;
+const isAdmin = userEmail === ADMIN_EMAIL;
+
+if (isAdmin) {
+  console.log("ADMIN BYPASS ACTIVE");
 }
 const maxFree = 3;
 const maxWithAccount = 5;
@@ -218,44 +220,43 @@ if (userId && !isPro && currentCount >= maxWithAccount) {
 }
 
 // ===== PRO DAILY LIMIT =====
-if (userId && isPro) {
+if (userId && isPro && !isAdmin) {
+ const now = Date.now();
 
-  const today = new Date().toISOString().slice(0, 10);
+const lastReset = data?.last_usage_reset
+  ? new Date(data.last_usage_reset).getTime()
+  : 0;
 
-  const { data } = await supabase
-    .from("users")
-    .select("daily_usage, last_usage_reset")
-    .eq("id", userId)
-    .single();
+let usage = data?.daily_usage || 0;
 
-  let usage = data?.daily_usage || 0;
-  let lastReset = data?.last_usage_reset || today;
-
-  if (lastReset !== today) {
-    usage = 0;
-    await supabase
-      .from("users")
-      .update({
-        daily_usage: 0,
-        last_usage_reset: today
-      })
-      .eq("id", userId);
-  }
-
-  if (usage >= 10) {
-    return res.status(403).json({
-      error: "DAILY_LIMIT_REACHED",
-      message: "Daily limit reached (10/day)"
-    });
-  }
+// 🔥 rolling reset (24h)
+if (now - lastReset > 24 * 60 * 60 * 1000) {
+  usage = 0;
 
   await supabase
     .from("users")
     .update({
-      daily_usage: usage + 1,
-      last_usage_reset: today
+      daily_usage: 0,
+      last_usage_reset: new Date().toISOString()
     })
     .eq("id", userId);
+}
+
+if (usage >= 10) {
+  return res.status(403).json({
+    error: "DAILY_LIMIT_REACHED",
+    message: "Daily limit reached (10 in 24h)"
+  });
+}
+
+// increment usage
+await supabase
+  .from("users")
+  .update({
+    daily_usage: usage + 1,
+    last_usage_reset: new Date().toISOString()
+  })
+  .eq("id", userId);
 }
 store[deviceId].count += 1;
 
