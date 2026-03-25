@@ -221,13 +221,20 @@ if (userId && !isPro && currentCount >= maxWithAccount) {
 
 // ===== PRO DAILY LIMIT =====
 if (userId && isPro && !isAdmin) {
- const now = Date.now();
 
-const lastReset = data?.last_usage_reset
-  ? new Date(data.last_usage_reset).getTime()
-  : 0;
+  const { data } = await supabase
+    .from("users")
+    .select("daily_usage, last_usage_reset")
+    .eq("id", userId)
+    .single();
 
-let usage = data?.daily_usage || 0;
+  const now = Date.now();
+
+  const lastReset = data?.last_usage_reset
+    ? new Date(data.last_usage_reset).getTime()
+    : 0;
+
+  let usage = data?.daily_usage || 0;
 
 // 🔥 rolling reset (24h)
 if (now - lastReset > 24 * 60 * 60 * 1000) {
