@@ -57,7 +57,13 @@ async function fetchFCSPrice(symbol: string) {
     return null;
   }
 }
-app.use(cors());
+app.use(cors({
+  origin: [
+    "https://atlasterminal.pro",
+    "http://localhost:3000"
+  ],
+  credentials: true
+}));
 app.use((req, res, next) => {
   if (req.originalUrl === "/stripe-webhook") {
     next();
