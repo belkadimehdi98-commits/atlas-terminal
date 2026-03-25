@@ -344,8 +344,7 @@ private async fcsForexPrice(pair: string) {
 
   private async alphaVantageOil(symbol:string) {
 
-    const key =
-      process.env.ALPHA_VANTAGE_KEYS?.split(",")[0];
+     const key = process.env.ALPHA_VANTAGE_KEY;
 
     const fn =
       symbol === "BRENT" ? "BRENT" : "WTI";
@@ -359,8 +358,7 @@ private async fcsForexPrice(pair: string) {
 
   private async alphaVantageGas() {
 
-    const key =
-      process.env.ALPHA_VANTAGE_KEYS?.split(",")[0];
+      const key = process.env.ALPHA_VANTAGE_KEY;
 
     const r = await axios.get(
       `${process.env.COMMODITIES_BASE}?function=NATURAL_GAS&interval=daily&apikey=${key}`
