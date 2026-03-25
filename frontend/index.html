@@ -1308,6 +1308,13 @@ window.addEventListener('load', async () => {
   // 1. Get session
 const { data: { session } } = await supabaseClient.auth.getSession();
 const isLoggedIn = !!session?.user;
+const ADMIN_EMAIL = "mehdibelkadi2024@gmail.com";
+const isAdmin = session?.user?.email === ADMIN_EMAIL;
+
+// ✅ FULL BYPASS FOR OWNER
+if (isAdmin) {
+  console.log("ADMIN BYPASS ACTIVE");
+} else {
   if (session?.user) {
     userId = session.user.id;
     document.getElementById("login-btn").innerText = "LOGGED";
