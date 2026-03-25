@@ -875,37 +875,26 @@ align-items:flex-start;
 }
 @media (max-width: 768px) {
 
-  /* ✅ SHOW MOBILE HINT */
-  #mobile-hint{
-    display:block;
-  }
-
   .workspace {
     display: flex;
     flex-direction: column;
   }
 
-  .left-column {
-    display: contents;
-  }
+.left-column {
+  display: contents;
+}
 
-  .decision-panel {
-    order: 2;
-  }
+.decision-panel {
+  order: 2;
+}
 
-  .decision-panel,
-  .analysis-panel,
-  .ai-block {
-    width: 100%;
-  }
+.analysis-panel {
+  order: 3;
+}
 
-  .analysis-panel {
-    order: 3;
-  }
-
-  .ai-block {
-    order: 4;
-  }
+.ai-block {
+  order: 4;
+}
 
 }
 </style>
@@ -921,19 +910,6 @@ const stripe = Stripe("pk_live_51TDrUjEqbVfX9MEYqwYpVkx1toevd5CvIsGQvGxj2Y0RlE1l
 <body>
   <div class="app">
     <div class="shell">
-<div id="mobile-hint" style="
-  display:none;
-  padding:10px 14px;
-  font-size:12px;
-  font-weight:700;
-  letter-spacing:0.06em;
-  color:#bcd2ff;
-  background:linear-gradient(90deg,#0f2138,#0b1624);
-  border-bottom:1px solid rgba(138,165,204,0.14);
-  text-align:center;
-">
-  Optimized for a professional desktop trading experience
-</div>
 <div class="topbar">
 
 <div class="brand">
@@ -1308,13 +1284,6 @@ window.addEventListener('load', async () => {
   // 1. Get session
 const { data: { session } } = await supabaseClient.auth.getSession();
 const isLoggedIn = !!session?.user;
-const ADMIN_EMAIL = "mehdibelkadi2024@gmail.com";
-const isAdmin = session?.user?.email === ADMIN_EMAIL;
-
-// ✅ FULL BYPASS FOR OWNER
-if (isAdmin) {
-  console.log("ADMIN BYPASS ACTIVE");
-} else {
   if (session?.user) {
     userId = session.user.id;
     document.getElementById("login-btn").innerText = "LOGGED";
@@ -1618,16 +1587,27 @@ async function runAnalysis(){
   const now = Date.now();
 
 const { data: { session } } = await supabaseClient.auth.getSession();
+
+const ADMIN_EMAIL = "mehdibelkadi2024@gmail.com";
+const isAdmin = session?.user?.email === ADMIN_EMAIL;
 const isLoggedIn = !!session?.user;
+
 console.log("DEBUG LOGIN STATE:", {
   userId,
-  isLoggedIn
+  isLoggedIn,
+  isAdmin
 });
+
+// ✅ ADMIN BYPASS (FRONTEND)
+if (isAdmin) {
+  console.log("ADMIN FRONTEND BYPASS");
+} else {
 if (!isLoggedIn) {  // Guest
   if (guestTries >= 3) {
     openPaywall();
     return;
-  }
+ }
+}
 
   guestTries++;
   localStorage.setItem("guest_tries", guestTries);
@@ -1969,6 +1949,7 @@ if(data.drivers && data.drivers.weather){
 
 }
 
+}
 /* ===== DATA INFRASTRUCTURE ===== */
 
 if(data.data_sources){
@@ -2716,30 +2697,6 @@ function showToast(message, type="success"){
 
   </div>
 </div>
-<script>
-/* MOBILE HINT → show once + auto hide */
 
-window.addEventListener("load", () => {
-
-  const hint = document.getElementById("mobile-hint");
-
-  if (!hint) return;
-
-  const isMobile = window.innerWidth <= 768;
-  const alreadySeen = localStorage.getItem("mobile_hint_seen");
-
-  if (isMobile && !alreadySeen) {
-
-    hint.style.display = "block";
-
-    setTimeout(() => {
-      hint.style.display = "none";
-    }, 5000);
-
-    localStorage.setItem("mobile_hint_seen", "true");
-  }
-
-});
-</script>
 </body>
 </html>
