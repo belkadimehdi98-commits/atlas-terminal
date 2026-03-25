@@ -34,9 +34,9 @@ private async fastFallback(
 
   console.error("ALL PROVIDERS FAILED — returning fallback");
 
-  this.source = "fallback";
+  this.source = "failed";
 
-  return 0;
+ throw new Error("All providers failed");
 
 }
   
@@ -101,7 +101,8 @@ return this.fastFallback(
     { fn: () => this.binancePrice(symbol), name: "Binance REST API" },
     { fn: () => this.coinGeckoPrice(symbol), name: "CoinGecko API" },
     { fn: () => this.coinCapPrice(symbol), name: "CoinCap API" },
-    { fn: () => this.cryptoComparePrice(symbol), name: "CryptoCompare API" }
+{ fn: () => this.cryptoComparePrice(symbol), name: "CryptoCompare API" },
+{ fn: () => this.fcsCryptoPrice(symbol), name: "FCS API" }
   ].map(t => ({
     name: t.name,
     fn: async () => {
@@ -121,7 +122,8 @@ return this.fastFallback(
 return this.fastFallback([
   { fn: () => this.frankfurterPrice(symbol), name: "Frankfurter FX API" },
   { fn: () => this.currencyFreaksPrice(symbol), name: "CurrencyFreaks API" },
-  { fn: () => this.exchangeRateHost(symbol), name: "ExchangeRate Host API" }
+  { fn: () => this.exchangeRateHost(symbol), name: "ExchangeRate Host API" },
+  { fn: () => this.fcsForexPrice(symbol), name: "FCS API" }
 ]);
     }
 
@@ -145,7 +147,8 @@ return this.fastFallback([
 
 return this.fastFallback([
   { fn: () => this.alphaVantageOil(symbol), name: "AlphaVantage Commodities API" },
-  { fn: () => this.eiaOil(symbol), name: "US EIA Energy API" }
+  { fn: () => this.eiaOil(symbol), name: "US EIA Energy API" },
+  { fn: () => this.fcsCommodityPrice(symbol), name: "FCS API" }
 ]);
     }
 
@@ -153,7 +156,8 @@ return this.fastFallback([
 
 return this.fastFallback([
   { fn: () => this.alphaVantageGas(), name: "AlphaVantage Gas API" },
-  { fn: () => this.eiaGas(), name: "US EIA Natural Gas API" }
+  { fn: () => this.eiaGas(), name: "US EIA Natural Gas API" },
+  { fn: () => this.fcsCommodityPrice("NATGAS"), name: "FCS API" }
 ]);
     }
 
@@ -165,7 +169,8 @@ return this.fastFallback([
 
 return this.fastFallback([
   { fn: () => this.yahooIndex(symbol), name: "Yahoo Finance API" },
-  { fn: () => this.twelveDataIndex(symbol), name: "TwelveData Index API" }
+  { fn: () => this.twelveDataIndex(symbol), name: "TwelveData Index API" },
+  { fn: () => this.fcsIndexPrice(symbol), name: "FCS API" }
 ]);
     }
 
@@ -179,7 +184,8 @@ return this.fastFallback([
   { fn: () => this.polygonStock(symbol), name: "Polygon Market Data API" },
   { fn: () => this.finnhubStock(symbol), name: "Finnhub Market API" },
   { fn: () => this.twelveDataStock(symbol), name: "TwelveData Stocks API" },
-  { fn: () => this.yahooStock(symbol), name: "Yahoo Finance API" }
+  { fn: () => this.yahooStock(symbol), name: "Yahoo Finance API" },
+  { fn: () => this.fcsStockPrice(symbol), name: "FCS API" }
 ]);
     }
 
@@ -238,6 +244,20 @@ const url =
     return Number(r.data.USD);
   }
 
+private async fcsCryptoPrice(symbol: string) {
+
+  const key = process.env.FCS_KEY;
+
+  const base = symbol.replace("USDT","");
+
+  const formatted = base + "/USD";
+
+  const r = await axios.get(
+    `https://fcsapi.com/api-v3/crypto/latest?symbol=${formatted}&access_key=${key}`
+  );
+
+  return Number(r.data?.response?.[0]?.c);
+}
   /* =========================================================
      FOREX
   ========================================================= */
@@ -276,6 +296,19 @@ const url =
 
     return Number(r.data.rates[quote]);
   }
+private async fcsForexPrice(pair: string) {
+
+  const key = process.env.FCS_KEY;
+
+  const formatted =
+    pair.slice(0,3) + "/" + pair.slice(3,6);
+
+  const r = await axios.get(
+    `https://fcsapi.com/api-v3/forex/latest?symbol=${formatted}&access_key=${key}`
+  );
+
+  return Number(r.data?.response?.[0]?.c);
+}
 
   /* =========================================================
      METALS
@@ -353,7 +386,22 @@ const url =
 
     return Number(r.data?.response?.data?.[0]?.value);
   }
+private async fcsCommodityPrice(symbol: string) {
 
+  const key = process.env.FCS_KEY;
+
+  const map: any = {
+    WTI: "WTI",
+    BRENT: "BRENT",
+    NATGAS: "NATURAL_GAS"
+  };
+
+  const r = await axios.get(
+    `https://fcsapi.com/api-v3/commodity/latest?symbol=${map[symbol]}&access_key=${key}`
+  );
+
+  return Number(r.data?.response?.[0]?.c);
+}
   /* =========================================================
      INDICES
   ========================================================= */
@@ -383,7 +431,16 @@ const url =
 
     return Number(r.data.price);
   }
+private async fcsIndexPrice(symbol: string) {
 
+  const key = process.env.FCS_KEY;
+
+  const r = await axios.get(
+    `https://fcsapi.com/api-v3/index/latest?symbol=${symbol}&access_key=${key}`
+  );
+
+  return Number(r.data?.response?.[0]?.c);
+}
   /* =========================================================
      STOCKS
   ========================================================= */
@@ -423,6 +480,16 @@ const url =
 
     return r.data.quoteResponse.result[0].regularMarketPrice;
   }
+private async fcsStockPrice(symbol: string) {
+
+  const key = process.env.FCS_KEY;
+
+  const r = await axios.get(
+    `https://fcsapi.com/api-v3/stock/latest?symbol=${symbol}&access_key=${key}`
+  );
+
+  return Number(r.data?.response?.[0]?.c);
+}
 }
 
 export const marketRouter = new MarketRouter();

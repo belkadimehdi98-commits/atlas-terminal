@@ -36,6 +36,27 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 const app = express();
+async function fetchFCSPrice(symbol: string) {
+  const key = process.env.FCS_KEY;
+
+  try {
+    const res = await fetch(
+      `https://fcsapi.com/api-v3/forex/latest?symbol=${symbol}&access_key=${key}`
+    );
+
+    const data = await res.json();
+
+    if (!data.response || !data.response[0]) return null;
+
+    return {
+      price: parseFloat(data.response[0].c),
+      source: "FCS"
+    };
+
+  } catch {
+    return null;
+  }
+}
 app.use(cors());
 app.use((req, res, next) => {
   if (req.originalUrl === "/stripe-webhook") {
