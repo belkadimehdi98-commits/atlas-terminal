@@ -18,7 +18,7 @@ private async fastFallback(
 
       const price = await task.fn();
 
-      if (price && !isNaN(price)) {
+      if (price !== null && price !== undefined && !isNaN(price) && price > 0) {
 
         this.source = task.name;
 

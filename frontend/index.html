@@ -17,7 +17,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Atlas Terminal – AI Trading Decision Engine | Crypto, Forex, Stocks</title>
 <meta name="description" content="Institutional AI trading terminal. Real-time analysis across crypto, forex, indices, commodities, and stocks. AI makes the final trade decision.">
-  <link rel="icon" href="data:,">
+  <link rel="icon" href="/favicon.ico" type="image/x-icon">
   <style>
     :root {
       --bg: #07111b;
@@ -1655,7 +1655,7 @@ showToast("Enter an asset or select one from the asset panel.", "error");
 }
 
 if(!allAssets.includes(asset)){
-  document.querySelector(".asset-name").innerText = "Unavailable";
+document.querySelector(".asset-name").innerText = "Data temporarily unavailable";
   const decision = document.querySelector(".decision-value");
   decision.innerText = "N/A";
   decision.classList.remove("buy","sell","neutral");
@@ -1699,7 +1699,7 @@ const res = await fetch(API, {
 
 /* --- HANDLE MISSING OR UNREACHABLE ASSETS --- */
 if (!data || data.error || !data.direction) {
-  document.querySelector(".asset-name").innerText = "Unavailable";
+document.querySelector(".asset-name").innerText = "Data temporarily unavailable";
 const decision = document.querySelector(".decision-value");
   decision.innerText = "N/A";
   decision.classList.remove("buy", "sell", "neutral");
