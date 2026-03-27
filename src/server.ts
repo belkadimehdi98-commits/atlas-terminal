@@ -284,8 +284,16 @@ console.log("USAGE:", deviceId, store[deviceId].count);
   const timeframe = "1h";
 
   const router = new MarketRouter();
-  const price = await router.getPrice(asset);
-console.log("STEP 2: price loaded", price);
+let price;
+
+try {
+  price = await router.getPrice(asset);
+} catch {
+  return res.status(500).json({
+    error: "MARKET_DATA_UNAVAILABLE",
+    message: "No real price data available"
+  });
+}console.log("STEP 2: price loaded", price);
 try {
   await closeTrades();
 } catch (e) {

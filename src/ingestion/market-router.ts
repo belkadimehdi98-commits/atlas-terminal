@@ -207,22 +207,33 @@ const url =
     return Number(r.data.price);
   }
 
-  private async coinGeckoPrice(symbol:string) {
+private async coinGeckoPrice(symbol:string) {
 
-    const id = symbol.replace("USDT","").toLowerCase();
+  const map: any = {
+    BTC: "bitcoin",
+    ETH: "ethereum",
+    SOL: "solana",
+    BNB: "binancecoin",
+    XRP: "ripple",
+    ADA: "cardano",
+    AVAX: "avalanche-2",
+    LINK: "chainlink",
+    MATIC: "polygon",
+    DOGE: "dogecoin"
+  };
 
-    const url =
-      `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd`;
+  const base = symbol.replace("USDT","");
+  const id = map[base];
 
-    const r = await axios.get(url, { timeout: HTTP_TIMEOUT });
+  if (!id) throw new Error("CoinGecko mapping missing");
 
-    return Number(r.data[id]?.usd);
-  }
+  const url =
+    `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd`;
 
-  private async coinCapPrice(symbol:string) {
+  const r = await axios.get(url, { timeout: HTTP_TIMEOUT });
 
-    const id = symbol.replace("USDT","").toLowerCase();
-
+  return Number(r.data[id]?.usd);
+}
     const url =
       `https://api.coincap.io/v2/assets/${id}`;
 
