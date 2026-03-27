@@ -11,11 +11,18 @@ export async function runLiquidationEngine(symbol: string): Promise<LiquidationS
   try {
 
     // Example Binance futures open interest endpoint (placeholder for liquidation data source)
-    const url = `https://fapi.binance.com/fapi/v1/openInterest?symbol=${symbol}USDT`
+const url = `https://fapi.binance.com/fapi/v1/openInterest?symbol=${symbol}USDT`
 
-    const res = await axios.get(url)
+const res = await axios.get(url, {
+  timeout: 3000,
+  validateStatus: () => true
+})
 
-    const oi = parseFloat(res.data.openInterest)
+if (!res.data || res.data.code) {
+  throw new Error("Binance blocked or invalid response")
+}
+
+const oi = parseFloat(res.data.openInterest)
 
     // Placeholder logic (will upgrade later)
     let squeezeBias: "SHORT_SQUEEZE" | "LONG_SQUEEZE" | "NONE" = "NONE"
