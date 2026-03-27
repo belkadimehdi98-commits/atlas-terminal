@@ -52,8 +52,16 @@ export class CrossAssetEngine {
     let riskOffSignals = 0
     let riskOnSignals = 0
 
-    if (result.gold && result.gold > 0) riskOffSignals++
-    if (result.btc && result.btc > 0) riskOnSignals++
+// 🔥 crude directional proxy (temporary but valid)
+
+if (result.gold && result.spx) {
+  if (result.gold > result.spx) riskOffSignals++
+  else riskOnSignals++
+}
+
+if (result.btc && result.spx) {
+  if (result.btc > result.spx) riskOnSignals++
+}
 
     if (riskOffSignals > riskOnSignals) {
 

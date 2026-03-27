@@ -50,10 +50,14 @@ async analyze(events: DetectedEvent[]): Promise<MacroImpact> {
       }
     }
 
-    let regime: "RISK_ON" | "RISK_OFF" | "NEUTRAL" = "NEUTRAL";
+let regime: "RISK_ON" | "RISK_OFF" | "NEUTRAL" = "NEUTRAL";
 
-    if (riskOffScore > riskOnScore) regime = "RISK_OFF";
-    if (riskOnScore > riskOffScore) regime = "RISK_ON";
+if (riskOffScore >= riskOnScore + 1) regime = "RISK_OFF";
+else if (riskOnScore >= riskOffScore + 1) regime = "RISK_ON";
+else {
+  // 🔥 force slight bias instead of dead neutral
+  regime = riskOnScore >= riskOffScore ? "RISK_ON" : "RISK_OFF";
+}
 
     const summary: MacroSummary = {
       regime,

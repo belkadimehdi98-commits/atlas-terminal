@@ -167,9 +167,9 @@ private marketStructure(data: number[]): string {
   const lows = Math.min(...recent);
   const last = data[data.length - 1];
 
-  if (last > highs * 0.98) return "Price pressing resistance";
+if (last > highs * 0.995) return "Price pressing resistance";
 
-  if (last < lows * 1.02) return "Price testing support";
+if (last < lows * 1.005) return "Price testing support";
 
   return "Range structure";
 }
