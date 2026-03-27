@@ -64,7 +64,7 @@ app.use(cors({
     "http://localhost:3000"
   ],
   methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization"],
+ allowedHeaders: ["Content-Type", "Authorization", "x-device-id"],
   credentials: true
 }));
 app.use((req, res, next) => {
