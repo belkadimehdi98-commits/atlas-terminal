@@ -197,7 +197,7 @@ return this.fastFallback([
 
   private async binancePrice(symbol:string) {
 
-const base = "https://api.binance.com";
+const base = "https://data-api.binance.vision";
 
 const url =
   `${base}/api/v3/ticker/price?symbol=${symbol}`;

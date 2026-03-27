@@ -50,7 +50,7 @@ Confidence scale:
 `
   input.positioning = input.fusedSignals?.positioning || null
   const userPrompt = JSON.stringify(input, null, 2)
-
+console.log("AI INPUT:", JSON.stringify(input, null, 2));
   const completion = await client.chat.completions.create({
     model: "gpt-4.1",
     temperature: 0.2,
@@ -61,6 +61,7 @@ Confidence scale:
   })
 
   const text = completion.choices[0].message?.content || "{}"
+  console.log("AI RAW OUTPUT:", text);
 
   try {
 const parsed = JSON.parse(text)
