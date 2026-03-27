@@ -1,5 +1,5 @@
 import axios from "axios";
-
+const HTTP_TIMEOUT = 4000;
 export class MarketRouter {
 
   public source: string = "Unknown";
@@ -214,7 +214,7 @@ const url =
     const url =
       `https://api.coingecko.com/api/v3/simple/price?ids=${id}&vs_currencies=usd`;
 
-    const r = await axios.get(url);
+    const r = await axios.get(url, { timeout: HTTP_TIMEOUT });
 
     return Number(r.data[id]?.usd);
   }

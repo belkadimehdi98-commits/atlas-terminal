@@ -2250,10 +2250,11 @@ async function loadCandles(symbol){
 
   let assetClass = "crypto";
 
-  if(ASSETS.forex.includes(symbol)) assetClass = "forex";
-  else if(ASSETS.indices.includes(symbol)) assetClass = "index";
-  else if(ASSETS.commodities.includes(symbol)) assetClass = "energy";
-  else if(ASSETS.stocks.includes(symbol)) assetClass = "stock";
+if(ASSETS.forex.includes(symbol)) assetClass = "forex";
+else if(ASSETS.indices.includes(symbol)) assetClass = "index";
+else if(symbol === "GOLD" || symbol === "SILVER") assetClass = "metal";
+else if(symbol === "OIL" || symbol === "BRENT" || symbol === "NATGAS") assetClass = "energy";
+else if(ASSETS.stocks.includes(symbol)) assetClass = "stock";
 
   try{
 
