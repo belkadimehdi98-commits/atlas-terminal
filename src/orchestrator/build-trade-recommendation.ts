@@ -21,7 +21,10 @@ const fusedSignals = await signalFusionEngine({
   asset,
   signals
 });
-
+ 
+if ((fusedSignals as any).signalQuality === "Weak") {
+  throw new Error("LOW_QUALITY_DATA_BLOCKED");
+}
   // 2 — AI becomes final decision authority
   const finalTrade = await aiDecisionEngine({
     asset,
