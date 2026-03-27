@@ -342,7 +342,7 @@ const aiDecision = await aiDecisionEngine({
 
   liquidity: liquidity.summary,
 
-  crossAsset: "flows detected",
+  crossAsset: crossAsset.alignment,
 
   cryptoFlows: cryptoFlows?.signal || null,
 

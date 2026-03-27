@@ -98,7 +98,6 @@ private async fastFallback(
 
 return this.fastFallback(
   [
-    { fn: () => this.binancePrice(symbol), name: "Binance REST API" },
     { fn: () => this.coinGeckoPrice(symbol), name: "CoinGecko API" },
     { fn: () => this.coinCapPrice(symbol), name: "CoinCap API" },
 { fn: () => this.cryptoComparePrice(symbol), name: "CryptoCompare API" },
