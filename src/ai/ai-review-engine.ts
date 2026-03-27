@@ -18,7 +18,8 @@ Rules:
   • downgrade confidence
   • change BUY or SELL to NO_TRADE
   • veto the trade entirely
-- Be conservative. If signals conflict or risk is high → prefer NO_TRADE.
+- Be selective but decisive. If a dominant driver exists (trend, liquidity, or structure), you MUST keep BUY or SELL.
+Use NO_TRADE only when there is no clear directional bias at all.
 
 Return ONLY JSON in this format:
 
@@ -45,12 +46,13 @@ Return ONLY JSON in this format:
 
   try {
     return JSON.parse(text);
-  } catch {
-    return {
-      action: "VETO",
-      finalDirection: "NO_TRADE",
-      finalConfidence: 0,
-      rationale: "AI review parsing failed"
-    };
   }
+catch {
+  return {
+    action: "CONFIRM",
+    finalDirection: input.direction,
+    finalConfidence: input.confidence,
+    rationale: "Review fallback → keeping AI decision"
+  };
+}
 }

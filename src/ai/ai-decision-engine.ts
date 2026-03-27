@@ -21,6 +21,8 @@ Guidelines:
 - You MUST resolve conflicts and choose a direction. Do NOT stay neutral when a directional bias exists.
 - Conflicting signals do NOT automatically mean NO_TRADE.
 - Weigh signals and choose the most probable direction.
+- When structure is at key level (support/resistance), you MUST choose direction based on trend + liquidity bias.
+- Do NOT return NO_TRADE only because of momentum conflict.
 - NO_TRADE is ONLY allowed when:
   • all signals are weak
   • OR no clear directional bias exists
