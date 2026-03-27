@@ -22,7 +22,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Atlas Terminal – AI Trading Decision Engine | Crypto, Forex, Stocks</title>
 <meta name="description" content="Institutional AI trading terminal. Real-time analysis across crypto, forex, indices, commodities, and stocks. AI makes the final trade decision.">
-  <link rel="icon" href="/favicon.ico" type="image/x-icon">
+  <link rel="icon" href="./logo.png" type="image/png">
   <style>
     :root {
       --bg: #07111b;
@@ -951,7 +951,14 @@ const stripe = Stripe("pk_live_51TDrUjEqbVfX9MEYqwYpVkx1toevd5CvIsGQvGxj2Y0RlE1l
   </div>
 
   <div class="action-stack">
-    <button class="run-btn">Run Analysis</button>
+    <button class="run-btn">Run Analysis</button> 
+    <div id="analysis-status" style="
+  font-size:11px;
+  color:#91a4c2;
+  margin-top:6px;
+  font-weight:700;
+  letter-spacing:0.05em;
+"></div>
 
     <div class="backtest-row">
       <button class="secondary-btn backtest-btn">Backtest</button>
@@ -1644,9 +1651,10 @@ if (now - last < 24 * 60 * 60 * 1000) {
   document.getElementById("bt-profit").innerText = "-";
 
 const btn = document.querySelector(".run-btn");
-btn.innerText = "Analyzing...";
+document.getElementById("analysis-status").innerText =
+  "AI processing market data... (this may take a few moments)";
 btn.disabled = true;
-
+btn.innerText = "Running institutional analysis...";
 const asset = document.querySelector(".searchbox input").value.trim().toUpperCase();
 
 // Check if asset exists in ASSETS
