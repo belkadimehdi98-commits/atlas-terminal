@@ -11,7 +11,7 @@ async function fetchPositioningData(symbol) {
         // Binance symbols are usually like BTCUSDT
         const pair = symbol.endsWith("USDT") ? symbol : symbol + "USDT";
         // Funding rate
-        const fundingRes = await axios_1.default.get(`https://fapi.binance.com/fapi/v1/premiumIndex?symbol=${pair}`);
+        const fundingRes = await axios_1.default.get(`https://data-api.binance.vision/api/v3/ticker/price?symbol=${pair}`);
         const fundingRate = parseFloat(((_a = fundingRes.data) === null || _a === void 0 ? void 0 : _a.lastFundingRate) || "0");
         // Open interest
         const oiRes = await axios_1.default.get(`https://fapi.binance.com/fapi/v1/openInterest?symbol=${pair}`);

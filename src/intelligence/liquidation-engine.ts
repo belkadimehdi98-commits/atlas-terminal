@@ -11,7 +11,7 @@ export async function runLiquidationEngine(symbol: string): Promise<LiquidationS
   try {
 
     // Example Binance futures open interest endpoint (placeholder for liquidation data source)
-const url = `https://fapi.binance.com/fapi/v1/openInterest?symbol=${symbol}USDT`
+const url = `https://data-api.binance.vision/api/v3/ticker/price?symbol=${symbol}USDT`
 
 const res = await axios.get(url, {
   timeout: 3000,
