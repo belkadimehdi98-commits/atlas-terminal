@@ -163,6 +163,8 @@ return this.fastFallback([
     ========================================================= */
 
     if (["SPX","NASDAQ","DAX","FTSE","DJI"].includes(symbol)) {
+  throw new Error("Index temporarily disabled");
+}
 
 return this.fastFallback([
   { fn: () => this.yahooIndex(symbol), name: "Yahoo Finance API" },

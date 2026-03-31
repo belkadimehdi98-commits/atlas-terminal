@@ -18,7 +18,13 @@ try {
 
   for (const trade of openTrades) {
 
-    const price = await router.getPrice(trade.asset);
+    let price;
+
+try {
+  price = await router.getPrice(trade.asset);
+} catch {
+  continue;
+}
 
     let closed = false;
     let exit = price;
