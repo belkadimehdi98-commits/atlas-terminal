@@ -8,15 +8,13 @@ export class LiquidityEngine {
 
     try {
 
-      const [walclRes, rrpRes, tgaRes] = await Promise.all([
+const [walclRes, rrpRes, tgaRes] = await Promise.all([
 
-        axios.get(`https://api.stlouisfed.org/fred/series/observations?series_id=WALCL&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=1`),
+  Promise.resolve({ data: { observations: [{ value: "0" }] } }),
+  Promise.resolve({ data: { observations: [{ value: "0" }] } }),
+  Promise.resolve({ data: { observations: [{ value: "0" }] } })
 
-        axios.get(`https://api.stlouisfed.org/fred/series/observations?series_id=RRPONTSYD&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=1`),
-
-        axios.get(`https://api.stlouisfed.org/fred/series/observations?series_id=WTREGEN&api_key=${FRED_KEY}&file_type=json&sort_order=desc&limit=1`)
-
-      ])
+])
 
       const fedBalanceSheet = parseFloat(walclRes.data.observations[0].value)
       const reverseRepo = parseFloat(rrpRes.data.observations[0].value)
