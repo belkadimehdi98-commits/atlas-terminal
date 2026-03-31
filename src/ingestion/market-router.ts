@@ -203,7 +203,12 @@ const base = "https://data-api.binance.vision";
 const url =
   `${base}/api/v3/ticker/price?symbol=${symbol}`;
 
-    const r = await axios.get(url);
+    const r = await axios.get(url, {
+  timeout: 4000,
+  headers: {
+    "User-Agent": "Mozilla/5.0"
+  }
+});
 
     return Number(r.data.price);
   }
