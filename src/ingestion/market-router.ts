@@ -94,24 +94,21 @@ private async fastFallback(
        CRYPTO
     ========================================================= */
 
-    if (symbol.endsWith("USDT")) {
+if (symbol.endsWith("USDT")) {
 
-return this.fastFallback(
-  [
-    { fn: () => this.binancePrice(symbol), name: "Binance API" },
-    { fn: () => this.coinGeckoPrice(symbol), name: "CoinGecko API" },
-    { fn: () => this.coinCapPrice(symbol), name: "CoinCap API" },
-{ fn: () => this.cryptoComparePrice(symbol), name: "CryptoCompare API" },
-{ fn: () => this.fcsCryptoPrice(symbol), name: "FCS API" }
-  ].map(t => ({
-    name: t.name,
-    fn: async () => {
-      console.log("TRYING:", t.name);
-      return await t.fn();
-    }
-  }))
-);
-    }
+  return this.fastFallback(
+    [
+      { fn: () => this.binancePrice(symbol), name: "Binance API" }
+    ].map(t => ({
+      name: t.name,
+      fn: async () => {
+        console.log("TRYING:", t.name);
+        return await t.fn();
+      }
+    }))
+  );
+
+}
 
     /* =========================================================
        FOREX
