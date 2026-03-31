@@ -282,7 +282,12 @@ console.log("USAGE:", deviceId, store[deviceId].count);
 let price;
 
 try {
-  price = await router.getPrice(asset);
+ const formatted =
+  asset && asset.includes("USDT")
+    ? asset
+    : asset + "USDT";
+
+price = await router.getPrice(formatted);
 } catch {
   return res.status(500).json({
     error: "MARKET_DATA_UNAVAILABLE",
