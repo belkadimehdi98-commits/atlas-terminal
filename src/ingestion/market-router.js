@@ -136,6 +136,7 @@ return this.fastFallback([
     ========================================================= */
     async binancePrice(symbol) {
         const url = `${process.env.BINANCE_BASE}/api/v3/ticker/price?symbol=${symbol}`;
+        console.log("BINANCE URL:", url);
         const r = await axios_1.default.get(url, {
     timeout: 4000,
     headers: {
