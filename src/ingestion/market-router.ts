@@ -32,7 +32,7 @@ private async fastFallback(
 
   }
 
-  console.error("ALL PROVIDERS FAILED — returning fallback");
+  // silent fail
 
   this.source = "failed";
 
