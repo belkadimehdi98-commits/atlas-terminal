@@ -71,12 +71,9 @@ return 0;
            CRYPTO
         ========================================================= */
 if (symbol.endsWith("USDT")) {
-    return this.fastFallback([
-        { fn: async () => { console.log("TRYING: Binance"); return this.binancePrice(symbol); }, name: "Binance REST API" },
-        { fn: async () => { console.log("TRYING: CoinGecko"); return this.coinGeckoPrice(symbol); }, name: "CoinGecko API" },
-        { fn: async () => { console.log("TRYING: CoinCap"); return this.coinCapPrice(symbol); }, name: "CoinCap API" },
-        { fn: async () => { console.log("TRYING: CryptoCompare"); return this.cryptoComparePrice(symbol); }, name: "CryptoCompare API" }
-    ]);
+return this.fastFallback([
+    { fn: async () => { console.log("TRYING: Binance"); return this.binancePrice(symbol); }, name: "Binance REST API" }
+]);
 }
         /* =========================================================
            FOREX
@@ -139,7 +136,12 @@ if (symbol.endsWith("USDT")) {
     ========================================================= */
     async binancePrice(symbol) {
         const url = `${process.env.BINANCE_BASE}/api/v3/ticker/price?symbol=${symbol}`;
-        const r = await axios_1.default.get(url);
+        const r = await axios_1.default.get(url, {
+    timeout: 4000,
+    headers: {
+        "User-Agent": "Mozilla/5.0"
+    }
+});
         return Number(r.data.price);
     }
     async coinGeckoPrice(symbol) {
