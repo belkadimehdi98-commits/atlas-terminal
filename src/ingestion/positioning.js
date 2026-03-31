@@ -14,11 +14,11 @@ async function fetchPositioningData(symbol) {
         const fundingRes = await axios_1.default.get(`https://data-api.binance.vision/api/v3/ticker/price?symbol=${pair}`);
         const fundingRate = parseFloat(((_a = fundingRes.data) === null || _a === void 0 ? void 0 : _a.lastFundingRate) || "0");
         // Open interest
-        const oiRes = await axios_1.default.get(`https://fapi.binance.com/fapi/v1/openInterest?symbol=${pair}`);
-        const openInterest = parseFloat(((_b = oiRes.data) === null || _b === void 0 ? void 0 : _b.openInterest) || "0");
+        const openInterest = 0;
+
         // Long / Short ratio (Binance global account ratio)
-        const ratioRes = await axios_1.default.get(`https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=${pair}&period=5m&limit=1`);
-        const longShortRatio = parseFloat(((_d = (_c = ratioRes.data) === null || _c === void 0 ? void 0 : _c[0]) === null || _d === void 0 ? void 0 : _d.longShortRatio) || "1");
+         const longShortRatio = 1;
+
         return {
             fundingRate,
             openInterest,
