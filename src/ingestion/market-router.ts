@@ -235,13 +235,7 @@ private async coinGeckoPrice(symbol:string) {
 
   return Number(r.data[id]?.usd);
 }
-    const url =
-      `https://api.coincap.io/v2/assets/${id}`;
 
-    const r = await axios.get(url);
-
-    return Number(r.data?.data?.priceUsd);
-  }
 
   private async cryptoComparePrice(symbol:string) {
 
