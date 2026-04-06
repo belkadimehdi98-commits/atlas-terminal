@@ -435,14 +435,22 @@ private async fcsCommodityPrice(symbol: string) {
     return r.data.quoteResponse.result[0].regularMarketPrice;
   }
 
-  private async twelveDataIndex(symbol:string) {
+private async twelveDataIndex(symbol:string) {
 
-    const r = await axios.get(
-      `https://api.twelvedata.com/price?symbol=${symbol}&apikey=${process.env.TWELVE_DATA_KEY}`
-    );
+  const map: any = {
+    SPX: "SPY",
+    NASDAQ: "QQQ",
+    DJI: "DIA",
+    DAX: "DAX",
+    FTSE: "FTSE"
+  };
 
-    return Number(r.data.price);
-  }
+  const r = await axios.get(
+    `https://api.twelvedata.com/price?symbol=${map[symbol]}&apikey=${process.env.TWELVE_DATA_KEY}`
+  );
+
+  return Number(r.data.price);
+}
 private async fcsIndexPrice(symbol: string) {
 
   const key = process.env.FCS_KEY;
