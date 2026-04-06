@@ -13,28 +13,54 @@ export async function fetchPositioningData(symbol: string): Promise<RawPositioni
 
     const pair = symbol.endsWith("USDT") ? symbol : symbol + "USDT";
 
-    // Funding rate
-    const fundingRes = await axios.get(
-      `https://fapi.binance.com/fapi/v1/premiumIndex?symbol=${pair}`
-    );
+    // FUNDING RATE (with fallback)
+    let fundingRate = 0;
 
-    const fundingRate = parseFloat(fundingRes.data?.lastFundingRate || "0");
+    try {
+      const fundingRes = await axios.get(
+        `https://fapi.binance.com/fapi/v1/premiumIndex?symbol=${pair}`
+      );
+      fundingRate = parseFloat(fundingRes.data?.lastFundingRate || "0");
+    } catch {
+      const fundingRes = await axios.get(
+        `https://data-api.binance.vision/fapi/v1/premiumIndex?symbol=${pair}`
+      );
+      fundingRate = parseFloat(fundingRes.data?.lastFundingRate || "0");
+    }
 
-    // Open interest
-    const oiRes = await axios.get(
-      `https://fapi.binance.com/fapi/v1/openInterest?symbol=${pair}`
-    );
+    // OPEN INTEREST (with fallback)
+    let openInterest = 0;
 
-    const openInterest = parseFloat(oiRes.data?.openInterest || "0");
+    try {
+      const oiRes = await axios.get(
+        `https://fapi.binance.com/fapi/v1/openInterest?symbol=${pair}`
+      );
+      openInterest = parseFloat(oiRes.data?.openInterest || "0");
+    } catch {
+      const oiRes = await axios.get(
+        `https://data-api.binance.vision/fapi/v1/openInterest?symbol=${pair}`
+      );
+      openInterest = parseFloat(oiRes.data?.openInterest || "0");
+    }
 
-    // Long / Short ratio
-    const ratioRes = await axios.get(
-      `https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=${pair}&period=5m&limit=1`
-    );
+    // LONG / SHORT RATIO (with fallback)
+    let longShortRatio = 1;
 
-    const longShortRatio = parseFloat(
-      ratioRes.data?.[0]?.longShortRatio || "1"
-    );
+    try {
+      const ratioRes = await axios.get(
+        `https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=${pair}&period=5m&limit=1`
+      );
+      longShortRatio = parseFloat(
+        ratioRes.data?.[0]?.longShortRatio || "1"
+      );
+    } catch {
+      const ratioRes = await axios.get(
+        `https://data-api.binance.vision/futures/data/globalLongShortAccountRatio?symbol=${pair}&period=5m&limit=1`
+      );
+      longShortRatio = parseFloat(
+        ratioRes.data?.[0]?.longShortRatio || "1"
+      );
+    }
 
     return {
       fundingRate,
