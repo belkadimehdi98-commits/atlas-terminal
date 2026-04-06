@@ -442,8 +442,16 @@ private async fcsIndexPrice(symbol: string) {
 
   const key = process.env.FCS_KEY;
 
+  const map: any = {
+    SPX: "US500",
+    NASDAQ: "NAS100",
+    DJI: "US30",
+    DAX: "GER30",
+    FTSE: "UK100"
+  };
+
   const r = await axios.get(
-    `https://fcsapi.com/api-v3/index/latest?symbol=${symbol}&access_key=${key}`
+    `https://fcsapi.com/api-v3/forex/latest?symbol=${map[symbol]}&access_key=${key}`
   );
 
   return Number(r.data?.response?.[0]?.c);
