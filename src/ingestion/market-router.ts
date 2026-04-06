@@ -94,8 +94,7 @@ private async fastFallback(
        CRYPTO
     ========================================================= */
 
-if (symbol.endsWith("USDT")) {
-
+if (symbol.endsWith("USDT") && symbol.length > 6) {
   return this.fastFallback(
     [
       { fn: () => this.binancePrice(symbol), name: "Binance API" }
