@@ -113,7 +113,12 @@ if (symbol.endsWith("USDT") && symbol.length > 6) {
        FOREX
     ========================================================= */
 
-if (symbol.includes("USD") && symbol.length === 6) {
+if (
+  symbol.includes("USD") &&
+  symbol.length === 6 &&
+  !symbol.startsWith("XAU") &&
+  !symbol.startsWith("XAG")
+) {
 
   try {
     const price = await this.frankfurterPrice(symbol);
