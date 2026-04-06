@@ -284,9 +284,6 @@ let price;
 try {
 let formatted = asset;
 
-// ✅ correct asset routing
-let formatted = asset;
-
 const cryptoAssets = [
   "BTC","ETH","SOL","BNB","XRP","ADA","AVAX","LINK","MATIC","DOGE"
 ];
@@ -294,7 +291,6 @@ const cryptoAssets = [
 if (cryptoAssets.includes(asset)) {
   formatted = asset + "USDT";
 }
-
 // forex stays like EURUSD
 
 price = await router.getPrice(formatted);
