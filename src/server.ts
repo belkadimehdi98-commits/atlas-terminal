@@ -284,10 +284,15 @@ let price;
 try {
 let formatted = asset;
 
-if (asset.endsWith("USDT")) {
-  formatted = asset;
-} else if (asset.length <= 5 && !asset.includes("USD")) {
-  formatted = asset + "USDT"; // crypto only
+// ✅ correct asset routing
+let formatted = asset;
+
+const cryptoAssets = [
+  "BTC","ETH","SOL","BNB","XRP","ADA","AVAX","LINK","MATIC","DOGE"
+];
+
+if (cryptoAssets.includes(asset)) {
+  formatted = asset + "USDT";
 }
 
 // forex stays like EURUSD
