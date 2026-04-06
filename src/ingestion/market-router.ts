@@ -166,16 +166,14 @@ return this.fastFallback([
        INDICES
     ========================================================= */
 
-    if (["SPX","NASDAQ","DAX","FTSE","DJI"].includes(symbol)) {
-  throw new Error("Index temporarily disabled");
+if (["SPX","NASDAQ","DAX","FTSE","DJI"].includes(symbol)) {
+
+  return this.fastFallback([
+    { fn: () => this.twelveDataIndex(symbol), name: "TwelveData Index API" },
+    { fn: () => this.fcsIndexPrice(symbol), name: "FCS API" }
+  ]);
+
 }
-
-return this.fastFallback([
-
-  { fn: () => this.twelveDataIndex(symbol), name: "TwelveData Index API" },
-  { fn: () => this.fcsIndexPrice(symbol), name: "FCS API" }
-]);
-    }
 
     /* =========================================================
        STOCKS
