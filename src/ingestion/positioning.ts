@@ -6,26 +6,35 @@ export async function fetchPositioningData(symbol: string) {
 
   try {
 
-    const funding = await axios.get(
-      `https://data-api.binance.vision/fapi/v1/premiumIndex?symbol=${pair}`
-    );
+    const [fundingRes, oiRes, ratioRes] = await Promise.all([
 
-    const oi = await axios.get(
-      `https://data-api.binance.vision/fapi/v1/openInterest?symbol=${pair}`
-    );
+      axios.get(`https://fapi.binance.com/fapi/v1/premiumIndex`, {
+        params: { symbol: pair },
+        timeout: 3000
+      }),
 
-    const ratio = await axios.get(
-      `https://data-api.binance.vision/futures/data/globalLongShortAccountRatio?symbol=${pair}&period=5m&limit=1`
-    );
+      axios.get(`https://fapi.binance.com/fapi/v1/openInterest`, {
+        params: { symbol: pair },
+        timeout: 3000
+      }),
+
+      axios.get(`https://fapi.binance.com/futures/data/globalLongShortAccountRatio`, {
+        params: { symbol: pair, period: "5m", limit: 1 },
+        timeout: 3000
+      })
+
+    ]);
 
     return {
-      fundingRate: parseFloat(funding.data.lastFundingRate || "0"),
-      openInterest: parseFloat(oi.data.openInterest || "0"),
-      longShortRatio: parseFloat(ratio.data?.[0]?.longShortRatio || "1")
+      fundingRate: parseFloat(fundingRes.data?.lastFundingRate || "0"),
+      openInterest: parseFloat(oiRes.data?.openInterest || "0"),
+      longShortRatio: parseFloat(ratioRes.data?.[0]?.longShortRatio || "1")
     };
 
-  } catch (err) {
-    console.error("POSITIONING ERROR:", err.message);
+  } catch (err: any) {
+
+    console.error("POSITIONING BLOCKED:", err.message);
+
     return null;
   }
 }
