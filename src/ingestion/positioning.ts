@@ -15,21 +15,21 @@ export async function fetchPositioningData(symbol: string): Promise<RawPositioni
 
     // Funding rate
     const fundingRes = await axios.get(
-      `https://data-api.binance.vision/fapi/v1/premiumIndex?symbol=${pair}`
+      `https://fapi.binance.com/fapi/v1/premiumIndex?symbol=${pair}`
     );
 
     const fundingRate = parseFloat(fundingRes.data?.lastFundingRate || "0");
 
     // Open interest
     const oiRes = await axios.get(
-      `https://data-api.binance.vision/fapi/v1/openInterest?symbol=${pair}`
+      `https://fapi.binance.com/fapi/v1/openInterest?symbol=${pair}`
     );
 
     const openInterest = parseFloat(oiRes.data?.openInterest || "0");
 
     // Long / Short ratio
     const ratioRes = await axios.get(
-      `https://data-api.binance.vision/futures/data/globalLongShortAccountRatio?symbol=${pair}&period=5m&limit=1`
+      `https://fapi.binance.com/futures/data/globalLongShortAccountRatio?symbol=${pair}&period=5m&limit=1`
     );
 
     const longShortRatio = parseFloat(

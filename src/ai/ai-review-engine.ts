@@ -15,11 +15,16 @@ Rules:
 - You MUST NOT modify entry, stop loss, or targets.
 - You may only:
   • confirm the trade
-  • downgrade confidence
-  • change BUY or SELL to NO_TRADE
-  • veto the trade entirely
-- Be selective but decisive. If a dominant driver exists (trend, liquidity, or structure), you MUST keep BUY or SELL.
-Use NO_TRADE only when there is no clear directional bias at all.
+  • slightly downgrade confidence
+  • veto ONLY in extreme conditions
+
+- You MUST NOT change BUY or SELL to NO_TRADE unless:
+  • data is missing or invalid
+  • or extreme contradiction exists across ALL signals
+
+- If a dominant driver exists (trend, liquidity, or structure), you MUST keep BUY or SELL.
+
+- Do NOT default to NO_TRADE.
 
 Return ONLY JSON in this format:
 
