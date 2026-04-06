@@ -79,13 +79,14 @@ private async fastFallback(
       DJI: "DJI",
       US30: "DJI",
 
-      /* STOCKS */
-      AAPL: "AAPL",
-      MSFT: "MSFT",
-      NVDA: "NVDA",
-      TSLA: "TSLA",
-      META: "META",
-      AMZN: "AMZN"
+/* STOCKS */
+AAPL: "AAPL",
+MSFT: "MSFT",
+NVDA: "NVDA",
+TSLA: "TSLA",
+META: "META",
+AMZN: "AMZN",
+GOOGL: "GOOGL"
     };
 
     symbol = symbolMap[symbol] ?? symbol;
