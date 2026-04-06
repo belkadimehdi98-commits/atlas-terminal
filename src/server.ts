@@ -282,10 +282,15 @@ console.log("USAGE:", deviceId, store[deviceId].count);
 let price;
 
 try {
- const formatted =
-  asset && asset.includes("USDT")
-    ? asset
-    : asset + "USDT";
+let formatted = asset;
+
+if (asset.endsWith("USDT")) {
+  formatted = asset;
+} else if (asset.length <= 5 && !asset.includes("USD")) {
+  formatted = asset + "USDT"; // crypto only
+}
+
+// forex stays like EURUSD
 
 price = await router.getPrice(formatted);
 } catch {
