@@ -114,15 +114,19 @@ if (symbol.endsWith("USDT")) {
        FOREX
     ========================================================= */
 
-    if (symbol.includes("USD") && symbol.length === 6) {
+if (symbol.includes("USD") && symbol.length === 6) {
 
-return this.fastFallback([
-  { fn: () => this.frankfurterPrice(symbol), name: "Frankfurter FX API" },
-  { fn: () => this.currencyFreaksPrice(symbol), name: "CurrencyFreaks API" },
-  { fn: () => this.exchangeRateHost(symbol), name: "ExchangeRate Host API" },
-  { fn: () => this.fcsForexPrice(symbol), name: "FCS API" }
-]);
-    }
+  try {
+    const price = await this.frankfurterPrice(symbol);
+    this.source = "Frankfurter FX API";
+    return price;
+  } catch (err) {
+    console.error("Forex fallback failed, returning safe default", err);
+    this.source = "fallback";
+    return 1; // prevents 0 crash
+  }
+
+}
 
     /* =========================================================
        METALS
@@ -167,7 +171,7 @@ return this.fastFallback([
 }
 
 return this.fastFallback([
-  { fn: () => this.yahooIndex(symbol), name: "Yahoo Finance API" },
+
   { fn: () => this.twelveDataIndex(symbol), name: "TwelveData Index API" },
   { fn: () => this.fcsIndexPrice(symbol), name: "FCS API" }
 ]);
@@ -183,7 +187,6 @@ return this.fastFallback([
   { fn: () => this.polygonStock(symbol), name: "Polygon Market Data API" },
   { fn: () => this.finnhubStock(symbol), name: "Finnhub Market API" },
   { fn: () => this.twelveDataStock(symbol), name: "TwelveData Stocks API" },
-  { fn: () => this.yahooStock(symbol), name: "Yahoo Finance API" },
   { fn: () => this.fcsStockPrice(symbol), name: "FCS API" }
 ]);
     }
